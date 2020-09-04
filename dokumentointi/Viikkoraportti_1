@@ -1,2 +1,13 @@
 - Aihe valittu (säännöllisten lauseiden tulkki)
-- Etsitty tietoa kuinka pitäisi sitä lähteä tekemään
+- Etsitty tietoa kuinka pitäisi tulkkia lähteä toteuttamaan
+- Graafinen käyttöliittymä aloitettu
+- Checkstyle lisätty
+- Solmu luokka tehty
+- Pino rakenteen teko aloitettu
+
+
+- Seuraavaksi vuorossa NFA automaatin toteuttaminen
+
+- noin 5h tällä viikolla
+
+Vähän jäänyt epäselväksi onko välttämätöntä tehdä muutos NFA automaatista DFA:ksi?

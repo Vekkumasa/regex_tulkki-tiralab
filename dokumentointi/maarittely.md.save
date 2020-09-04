@@ -1,0 +1,12 @@
+Tietojenkäsittelytieteen kandidaatti (TKT)
+Projekti toteutetaan Suomen kielellä. Ohjelmointikieli: Java
+
+Kyseessä on säännöllisten lausekkeiden tulkki. Käyttäjä sijoittaa kenttään halutun säännöllisen lausekkeen,
+tämän jälkeen käyttäjä antaa ohjelmalle halutun syötteen ja tulkki tarkistaa täsmääkö annettu syöte annettuun
+säännölliseen lausekkeeseen.
+
+
+Lähteet:
+https://cs.stackexchange.com/questions/40819/how-to-create-dfa-from-regular-expression-without-using-nfa
+https://cstheory.stackexchange.com/questions/14939/what-algorithms-exist-for-construction-a-dfa-that-recognizes-the-language-descri/14946#14946
+https://www.researchgate.net/post/Is_there_any_algorithm_exist_to_convert_a_regular_expression_directly_into_DFAhttp://www.compsci.hunter.cuny.edu/~sweiss/course_materials/csci265/KleenesTheorem.pdf

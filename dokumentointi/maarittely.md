@@ -1,17 +1,16 @@
 Tietojenkäsittelytieteen kandidaatti (TKT)
 Projekti toteutetaan Suomen kielellä. Ohjelmointikieli: Java
 
-Kyseessä on säännöllisten lausekkeiden tulkki. Käyttäjä sijoittaa kenttään halutun säännöllisen lausekkeen,
-tämän jälkeen käyttäjä antaa ohjelmalle halutun syötteen ja tulkki tarkistaa täsmääkö annettu syöte annettuun
+Kyseessä on säännöllisten lausekkeiden Kääntäjä. Käyttäjä sijoittaa kenttään halutun säännöllisen lausekkeen,
+tämän jälkeen käyttäjä antaa ohjelmalle halutun syötteen ja kääntäjä tarkistaa täsmääkö annettu syöte annettuun
 säännölliseen lausekkeeseen.
 
 Tarkoituksena on luoda annetusta säännöllisestä lausekkeesta NFA (epädeterministinen äärellinen automaatti, 
 nondeterministic finite automaton) minkä avulla tarkistetaan vastaako annettu syöte käyttäjältä saatua
 säännöllistä lauseketta. NFA käyttää apuna pino-tietorakennetta.
 
-Ohjelma käy läpi ensin annetun m pituisen säännöllisen lausekkeen ja muodostaa automaatin, tämän jälkeen
-käydään läpi n pituinen syöte automaatilla ja annetaan vastaus onko syöte hyväksytty vai hylätty joten
-aikavaativuus on O(nm)
+Ohjelma käy läpi ensin annetun m pituisen säännöllisen lausekkeen ja kääntää sen postfix muotoon, minkä jälkeen luodaan nfa mikä käännetään
+dfa:ksi. Dfa:ssa voi pahimmassa tapauksessa olla 2^m tiloja joten aikavaativuus on O(2^m)
 
 Lähteet:
 * https://cs.stackexchange.com/questions/40819/how-to-create-dfa-from-regular-expression-without-using-nfa

@@ -30,6 +30,11 @@
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.8.3</version>
+            <configuration>
+                <excludes>
+                    <exclude>regex/ui/*</exclude>
+                </excludes>
+            </configuration>
             <executions>
                 <execution>
                     <id>default-prepare-agent</id>
@@ -41,4 +46,24 @@
         </plugin>
     </plugins>
   </build>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

@@ -2,15 +2,13 @@ package regex.domain;
 
 public class Solmu {
     private int solmu;
-    private int seuraava;
-    private String siirtyma;
+    private Kaari kaari;
     private boolean hyvaksyva_tila;
     
-    public Solmu(int solmu, int seuraava, String siirtyma, boolean hyvaksyva_tila) {
+    public Solmu(int solmu, boolean hyvaksyva_tila) {
         this.solmu = solmu;
-        this.seuraava = solmu;
-        this.siirtyma = siirtyma;
         this.hyvaksyva_tila = hyvaksyva_tila;
+        this.kaari = new Kaari();
     }
 
     /**
@@ -28,34 +26,6 @@ public class Solmu {
     }
 
     /**
-     * @return the seuraava
-     */
-    public int getSeuraava() {
-        return seuraava;
-    }
-
-    /**
-     * @param seuraava the seuraava to set
-     */
-    public void setSeuraava(int seuraava) {
-        this.seuraava = seuraava;
-    }
-
-    /**
-     * @return the siirtyma
-     */
-    public String getSiirtyma() {
-        return siirtyma;
-    }
-
-    /**
-     * @param siirtyma the siirtyma to set
-     */
-    public void setSiirtyma(String siirtyma) {
-        this.siirtyma = siirtyma;
-    }
-
-    /**
      * @return the hyvaksyva_tila
      */
     public boolean isHyvaksyva_tila() {
@@ -67,5 +37,19 @@ public class Solmu {
      */
     public void setHyvaksyva_tila(boolean hyvaksyva_tila) {
         this.hyvaksyva_tila = hyvaksyva_tila;
+    }
+
+    /**
+     * @return the kaari
+     */
+    public Kaari getKaari() {
+        return kaari;
+    }
+
+    /**
+     * @param kaari the kaari to set
+     */
+    public void setKaari(Kaari kaari) {
+        this.kaari = kaari;
     }
 }

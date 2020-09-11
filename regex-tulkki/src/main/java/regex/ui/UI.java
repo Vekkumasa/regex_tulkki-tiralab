@@ -1,4 +1,3 @@
-
 package regex.ui;
 
 import java.text.DecimalFormat;
@@ -20,17 +19,25 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import regex.nfa.nfaKonstruktori;
+import regex.nfa.regexToPostfix;
+
 public class UI extends Application {
     
     private BackgroundFill bf;
     private Scene mainScene;
     private Label match;
+    private nfaKonstruktori nfaKonstruktori;
+    private regexToPostfix postfix;
     
     @Override
     public void init() throws Exception {
         
         bf = new BackgroundFill(Color.ANTIQUEWHITE, new CornerRadii(1),
          new Insets(0.0, 0.0, 0.0, 0.0));
+        nfaKonstruktori = new nfaKonstruktori("TESTI+*()|");
+        postfix = new regexToPostfix();
+        
     }
     @Override
     public void start(Stage window) {  
@@ -58,9 +65,15 @@ public class UI extends Application {
         match = new Label("It's a match");
         match.setTextFill(Color.GREEN);
         
+        Button luoNfa = new Button("luoNfa");
+        luoNfa.setOnAction(e -> {
+            nfaKonstruktori.luoNFA();
+            postfix.luoPostfix("a.(b|d)+.c.a*.(d.a.d.a)*.c");
+        });
+        
         mainPane.setBackground(new Background(bf));
         
-        mainPane.getChildren().addAll(input, inputField, regex, regexField, match);
+        mainPane.getChildren().addAll(input, inputField, regex, regexField, match, luoNfa);
         
         mainScene = new Scene(mainPane, 500, 300); 
         

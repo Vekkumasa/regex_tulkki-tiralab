@@ -1,14 +1,13 @@
 package regex.domain;
 
 public class Kaari {
-    private Solmu alku;
-    private Solmu loppu;
+    private Tila alku;
+    private Tila loppu;
     private char siirtyma;
     
-    public Kaari(Solmu alku, Solmu loppu, char siirtyma) {
+    public Kaari(Tila alku, Tila loppu) {
         this.alku = alku;
         this.loppu = loppu;
-        this.siirtyma = siirtyma;
     }
     
     public Kaari() {
@@ -18,28 +17,28 @@ public class Kaari {
     /**
      * @return the alku
      */
-    public Solmu getAlku() {
+    public Tila getAlku() {
         return alku;
     }
 
     /**
      * @param alku the alku to set
      */
-    public void setAlku(Solmu alku) {
+    public void setAlku(Tila alku) {
         this.alku = alku;
     }
 
     /**
      * @return the loppu
      */
-    public Solmu getLoppu() {
+    public Tila getLoppu() {
         return loppu;
     }
 
     /**
      * @param loppu the loppu to set
      */
-    public void setLoppu(Solmu loppu) {
+    public void setLoppu(Tila loppu) {
         this.loppu = loppu;
     }
 

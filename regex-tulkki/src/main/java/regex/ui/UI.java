@@ -19,24 +19,25 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import regex.nfa.nfaKonstruktori;
+import regex.nfa.nfaFragmentit;
 import regex.nfa.regexToPostfix;
+import regex.domain.*;
 
 public class UI extends Application {
     
     private BackgroundFill bf;
     private Scene mainScene;
     private Label match;
-    private nfaKonstruktori nfaKonstruktori;
     private regexToPostfix postfix;
+    private nfaFragmentit nfa;
     
     @Override
     public void init() throws Exception {
         
         bf = new BackgroundFill(Color.ANTIQUEWHITE, new CornerRadii(1),
          new Insets(0.0, 0.0, 0.0, 0.0));
-        nfaKonstruktori = new nfaKonstruktori("TESTI+*()|");
         postfix = new regexToPostfix();
+        this.nfa = new nfaFragmentit();
         
     }
     @Override
@@ -67,8 +68,11 @@ public class UI extends Application {
         
         Button luoNfa = new Button("luoNfa");
         luoNfa.setOnAction(e -> {
-            nfaKonstruktori.luoNFA();
+
+            postfix.konkatenaatiot("(a.b|c)*.c+.a");
             postfix.luoPostfix("a.(b|d)+.c.a*.(d.a.d.a)*.c");
+            nfa.luoTahtiTila(nfa.luoTahtiTila(nfa.luoKirjainTila('a')));
+
         });
         
         mainPane.setBackground(new Background(bf));

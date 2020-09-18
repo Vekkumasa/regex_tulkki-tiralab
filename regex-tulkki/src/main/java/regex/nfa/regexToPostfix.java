@@ -7,10 +7,38 @@ public class regexToPostfix {
     public regexToPostfix() {        
     }
     
+    public String konkatenaatiot(String regex) {
+        if (regex.length() == 1) {
+            return regex;
+        }
+        
+        char eka, toka;
+        String palautus = "";
+        
+        for (int i = 0; i < regex.length() -1; i++) {
+            eka = regex.charAt(i);
+            toka = regex.charAt(i + 1);
+            
+            palautus += eka;
+            if (eka != '(' && eka != ('|') && kirjain(toka)) {
+                palautus += ".";
+            } else if (toka == '(' && eka != '(' && eka != '|') {
+                palautus += ".";
+            }
+            
+            if (i == regex.length() -2) {
+                palautus += regex.charAt(regex.length() -1);
+            }
+        }
+        System.out.println("Konkatenaatio: " + palautus);
+        return palautus;
+    }
+    
     public String luoPostfix(String regex) {
         String postfix = "";
         char c, c1;
         int i = 0;
+        regex = konkatenaatiot(regex);
         regex += " ";
         Stack<Character> pino = new Stack();
         pino.push(' ');

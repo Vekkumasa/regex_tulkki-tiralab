@@ -25,8 +25,7 @@ public class nfaFragmentitTest {
         Kaari kaari = nfa.luoKirjainTila('a');
         assertThat(kaari.getAlku().getTila(), is(0));
         assertThat(kaari.getLoppu().getTila(), is(1));
-        assertThat(kaari.getSiirtyma(), is('a'));
-        assertThat(kaari.getAlku().getSeuraava().getTila(), is(1));
+        assertThat(kaari.getAlku().getSiirtyma(), is('a'));
     }
     
     @Test
@@ -47,8 +46,7 @@ public class nfaFragmentitTest {
         Kaari kaari = nfa.luoTahtiTila(edellinen);
         
         assertThat(kaari.getAlku().getSeuraava().getTila(), is(0));
-        assertThat(kaari.getAlku().getSeuraava2().getTila(), is(1));
-        assertThat(edellinen.getLoppu().getSeuraava().getTila(), is(0));
+        assertThat(edellinen.getLoppu().getSeuraava(), is(nullValue()));
     }
     
     @Test
@@ -57,17 +55,17 @@ public class nfaFragmentitTest {
         
         assertThat(kaari.getAlku().getSeuraava().getTila(), is(0));
         assertThat(kaari.getAlku().getSeuraava2(), is(nullValue()));
-        assertThat(kaari.getLoppu().getSeuraava().getTila(), is(0));
-        assertThat(kaari.getLoppu().getSeuraava2().getTila(), is(1));
+        assertThat(kaari.getLoppu().getSeuraava(), is(nullValue()));
+        assertThat(kaari.getLoppu().getSeuraava2(), is(nullValue()));
     }
     
     @Test
     public void konkatenaatio() {
         Kaari kaari = nfa.luoKonkatenaatioPisteTila(nfa.luoKirjainTila('a'), nfa.luoKirjainTila('b'));
         
-        assertThat(kaari.getAlku().getTila() , is(1));
-        assertThat(kaari.getLoppu().getTila(), is(2));
-        assertThat(kaari.getAlku().getSeuraava().getTila(), is(2));
+        assertThat(kaari.getAlku().getTila() , is(0));
+        assertThat(kaari.getLoppu().getTila(), is(3));
+        assertThat(kaari.getAlku().getSeuraava().getTila(), is(1));
     }
     
 }

@@ -7,12 +7,14 @@ public class Tila {
     private Kaari kaari;
     private boolean hyvaksyva_tila;
     private boolean vierailtu;
+    private char siirtyma;
     
     public Tila(int tila) {
         this.tila = tila;
         this.hyvaksyva_tila = false;
         this.kaari = new Kaari();
         this.vierailtu = false;
+        this.siirtyma = ' ';
     }
 
     /**
@@ -94,6 +96,20 @@ public class Tila {
      */
     public void setVierailtu(boolean vierailtu) {
         this.vierailtu = vierailtu;
+    }
+
+    /**
+     * @return the siirtyma
+     */
+    public char getSiirtyma() {
+        return siirtyma;
+    }
+
+    /**
+     * @param siirtyma the siirtyma to set
+     */
+    public void setSiirtyma(char siirtyma) {
+        this.siirtyma = siirtyma;
     }
 
 

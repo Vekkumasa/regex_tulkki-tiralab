@@ -8,4 +8,4 @@
 
 [3-viikkoraportti](https://github.com/Vekkumasa/regex_tulkki-tiralab/blob/master/dokumentointi/viikko3.md)
 
-
+[4-viikkoraportti](https://github.com/Vekkumasa/regex_tulkki-tiralab/blob/master/dokumentointi/viikko4.md)

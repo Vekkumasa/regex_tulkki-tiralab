@@ -3,7 +3,6 @@ package regex.domain;
 public class Kaari {
     private Tila alku;
     private Tila loppu;
-    private char siirtyma;
     
     public Kaari(Tila alku, Tila loppu) {
         this.alku = alku;
@@ -41,20 +40,5 @@ public class Kaari {
     public void setLoppu(Tila loppu) {
         this.loppu = loppu;
     }
-
-    /**
-     * @return the siirtyma
-     */
-    public char getSiirtyma() {
-        return siirtyma;
-    }
-
-    /**
-     * @param siirtyma the siirtyma to set
-     */
-    public void setSiirtyma(char siirtyma) {
-        this.siirtyma = siirtyma;
-    }
-    
     
 }

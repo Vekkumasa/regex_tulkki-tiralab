@@ -21,7 +21,10 @@ import javafx.stage.Stage;
 
 import regex.nfa.nfaFragmentit;
 import regex.nfa.regexToPostfix;
+import regex.nfa.nfa;
 import regex.domain.*;
+import java.util.Stack;
+import regex.dfa.dfa;
 
 public class UI extends Application {
     
@@ -29,7 +32,11 @@ public class UI extends Application {
     private Scene mainScene;
     private Label match;
     private regexToPostfix postfix;
-    private nfaFragmentit nfa;
+    private nfaFragmentit nfaFrag;
+    private nfa nfa;
+    private dfa dfa;
+    
+    private Stack<Kaari> kaaret;
     
     @Override
     public void init() throws Exception {
@@ -37,8 +44,9 @@ public class UI extends Application {
         bf = new BackgroundFill(Color.ANTIQUEWHITE, new CornerRadii(1),
          new Insets(0.0, 0.0, 0.0, 0.0));
         postfix = new regexToPostfix();
-        this.nfa = new nfaFragmentit();
-        
+        this.nfaFrag = new nfaFragmentit();
+        this.kaaret = new Stack();
+        this.nfa = new nfa("a(bb)+a");
     }
     @Override
     public void start(Stage window) {  
@@ -69,10 +77,50 @@ public class UI extends Application {
         Button luoNfa = new Button("luoNfa");
         luoNfa.setOnAction(e -> {
 
-            postfix.konkatenaatiot("(a.b|c)*.c+.a");
-            postfix.luoPostfix("a.(b|d)+.c.a*.(d.a.d.a)*.c");
-            nfa.luoTahtiTila(nfa.luoTahtiTila(nfa.luoKirjainTila('a')));
-
+            kaaret.add(nfaFrag.luoKirjainTila('a')); // 0, 1
+            kaaret.add(nfaFrag.luoKirjainTila('b')); // 2, 3
+            kaaret.add(nfaFrag.luoKirjainTila('b')); // 4, 5
+            Kaari oikea = kaaret.pop();
+            Kaari vasen = kaaret.pop();
+            kaaret.add(nfaFrag.luoKonkatenaatioPisteTila(vasen, oikea));
+            kaaret.add(nfaFrag.luoPlusTila(kaaret.pop()));
+            oikea = kaaret.peek();
+            /*
+            System.out.println("ALKU: " + oikea.getAlku().getTila() + " LOPPU: " + oikea.getLoppu().getTila());
+            System.out.println("Siirtymä: " + oikea.getAlku().getSiirtyma());
+            System.out.println("Alun Seuraava: " + oikea.getAlku().getSeuraava().getTila() + " Alun seuraava2: " + oikea.getAlku().getSeuraava2());
+            System.out.println("Lopun seuraava: " + oikea.getLoppu().getSeuraava().getTila() + " Lopun seuraava2: " + oikea.getLoppu().getSeuraava2().getTila());
+            
+            System.out.println("Stacki: " + kaaret.size());
+*/          
+            oikea = kaaret.pop();
+            vasen = kaaret.pop();
+            kaaret.add(nfaFrag.luoKonkatenaatioPisteTila(vasen, oikea));
+            kaaret.add(nfaFrag.luoKirjainTila('a'));
+            oikea = kaaret.pop();
+            vasen = kaaret.pop();
+            kaaret.add(nfaFrag.luoKonkatenaatioPisteTila(vasen, oikea));
+            
+            Kaari kaari = kaaret.peek();
+  //          System.out.println("Alku: " + kaari.getAlku().getTila() + " Loppu: " + kaari.getLoppu().getTila());
+    //        System.out.println("Alku seuraava: " + kaari.getAlku().getSeuraava().getTila() + " loppu seuraava " + kaari.getLoppu().getSeuraava());
+      //      System.out.println("Alku seuraava2: " + kaari.getAlku().getSeuraava2() + " loppu seuraava2 " + kaari.getLoppu().getSeuraava2());
+            
+            nfa.luoNfa();
+            kaari = nfa.getKaari();
+            System.out.println("");
+  //          System.out.println("Alku: " + kaari.getAlku().getTila() + " Loppu: " + kaari.getLoppu().getTila());
+    //        System.out.println("Alku seuraava: " + kaari.getAlku().getSeuraava().getTila() + " loppu seuraava " + kaari.getLoppu().getSeuraava());
+      //      System.out.println("Alku seuraava2: " + kaari.getAlku().getSeuraava2() + " loppu seuraava2 " + kaari.getLoppu().getSeuraava2());
+            
+            System.out.println("");
+            nfa.faktatTiskiin(kaari.getAlku());
+            System.out.println("");
+            System.out.println("Alkutila: " + kaari.getAlku().getTila() + " Lopputila: " + kaari.getLoppu().getTila());
+            System.out.println("---DFA---");
+            System.out.println("");
+            this.dfa = new dfa(nfa, "abbbba");
+            dfa.luoDfa();
         });
         
         mainPane.setBackground(new Background(bf));

@@ -25,7 +25,7 @@ public class nfaFragmentit {
         alku.setKaari(kaari);
         alku.setSiirtyma(c);
         
-       // alku.setSeuraava(loppu);
+        alku.setSeuraava(loppu);
         
         return kaari;
     }

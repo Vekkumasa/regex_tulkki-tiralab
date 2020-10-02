@@ -46,7 +46,7 @@ public class UI extends Application {
         postfix = new regexToPostfix();
         this.nfaFrag = new nfaFragmentit();
         this.kaaret = new Stack();
-        this.nfa = new nfa("a(bb)+a");
+        this.nfa = new nfa("a|b|c|d");
     }
     @Override
     public void start(Stage window) {  
@@ -114,13 +114,14 @@ public class UI extends Application {
       //      System.out.println("Alku seuraava2: " + kaari.getAlku().getSeuraava2() + " loppu seuraava2 " + kaari.getLoppu().getSeuraava2());
             
             System.out.println("");
-            nfa.faktatTiskiin(kaari.getAlku());
+  //          nfa.faktatTiskiin(kaari.getAlku());
             System.out.println("");
             System.out.println("Alkutila: " + kaari.getAlku().getTila() + " Lopputila: " + kaari.getLoppu().getTila());
             System.out.println("---DFA---");
             System.out.println("");
-            this.dfa = new dfa(nfa, "abbbba");
+            this.dfa = new dfa(nfa, "ad");
             dfa.luoDfa();
+            System.out.println(dfa.tarkistaSyote());
         });
         
         mainPane.setBackground(new Background(bf));
@@ -129,7 +130,7 @@ public class UI extends Application {
         
         mainScene = new Scene(mainPane, 500, 300); 
         
-        window.setTitle("Regex-tulkki");
+        window.setTitle("Regex-kääntäjä");
         window.setScene(mainScene);
         window.show();
     }

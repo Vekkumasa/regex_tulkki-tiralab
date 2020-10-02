@@ -65,7 +65,6 @@ public class nfaFragmentitTest {
         
         assertThat(kaari.getAlku().getTila() , is(0));
         assertThat(kaari.getLoppu().getTila(), is(3));
-        assertThat(kaari.getAlku().getSeuraava().getTila(), is(1));
     }
     
 }

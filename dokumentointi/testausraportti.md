@@ -1,4 +1,4 @@
-![Image of jacoco-regex-domain](https://github.com/Vekkumasa/regex_tulkki-tiralab/tree/master/dokumentointi/kuvat/jacoco-regex-domain.png)
+![Image of jacoco-regex-domain](https://github.com/Vekkumasa/regex_tulkki-tiralab/blob/master/dokumentointi/kuvat/jacoco-regex-domain.png)
 
 ![Image of jacoco-regex-nfa](https://github.com/Vekkumasa/regex_tulkki-tiralab/tree/master/dokumentointi/kuvat/jacoco-regex-nfa.png)
 

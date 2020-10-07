@@ -134,7 +134,6 @@ public class dfa {
     }
     
      public boolean tarkista() {
-      //  testi();
         System.out.println("---Tarkistus---");
         System.out.println("Syöte: " + syote);
         int currentState = 1;

@@ -59,7 +59,7 @@ public class dfa {
         
         while (!pino.isEmpty()) {
             HashSet<Tila> temp = dfa_tilat_avaimina.get(pino.pop());
-            dfaTila currentDfa = dfaLista[tila];
+            dfaTila currentDfa = getDfaLista()[tila];
             for (Tila tila : currentDfa.getNfaTilat()) {
                 if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
                     currentDfa.setHyvaksyvaTila(true);
@@ -76,7 +76,7 @@ public class dfa {
                         if (dfa_setit_avaimina.containsKey(seuraava)) {
                             
                             int seuraava_tila = dfa_setit_avaimina.get(seuraava);
-                            seurDfa = dfaLista[seuraava_tila];
+                            seurDfa = getDfaLista()[seuraava_tila];
                             currentDfa.lisaaSiirtyma(c, seuraava_tila);
                             
                             continue;
@@ -144,21 +144,21 @@ public class dfa {
             if (i == syote.length() -1) {
                 System.out.println("Indeksi = syote.length eli: " +(syote.length()-1));
                 System.out.println("currentState ennen muutosta: " + currentState);
-                currentState = dfaLista[currentState].getSiirtyma((int)syote.charAt(i));
+                currentState = getDfaLista()[currentState].getSiirtyma((int)syote.charAt(i));
                 System.out.println("finalState: " + currentState);
                 
                 if (currentState == -1) {
                     return false;
                 }
                 
-                if (dfaLista[currentState].isHyvaksyvaTila()) {
+                if (getDfaLista()[currentState].isHyvaksyvaTila()) {
                     System.out.println("Hyväksytään: " + currentState);
                     return true;
                 }
                 
             } else {
                 System.out.println("Currentstate: " + currentState);
-                currentState = dfaLista[currentState].getSiirtyma((int)syote.charAt(i));
+                currentState = getDfaLista()[currentState].getSiirtyma((int)syote.charAt(i));
                 System.out.println("CurrentState vol 2: " + currentState);
                 if (currentState == -1) {
                     return false;
@@ -167,5 +167,12 @@ public class dfa {
         }
         
         return false;
+    }
+
+    /**
+     * @return the dfaLista
+     */
+    public dfaTila[] getDfaLista() {
+        return dfaLista;
     }
 }

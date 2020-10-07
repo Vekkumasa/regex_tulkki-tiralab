@@ -17,6 +17,7 @@ public class dfa {
     private Character[] kirjaimet;
     private int indeksi = 0;
     private Stack<Integer> pino;
+    private int[][] siirtymat;
     private dfaTila ekaDfaTila;
     private dfaTila[] dfaLista;
     
@@ -28,6 +29,8 @@ public class dfa {
         this.tila = 1;
         this.syote = "#" + syote;
         this.kirjaimet = new Character[nfa.getKirjaimet().size()];
+        this.siirtymat = new int[6][6];
+        this.siirtymat[0][0] = -1;
         this.alkutilat = new HashSet();
         this.ekaDfaTila = new dfaTila();
         this.dfaLista = new dfaTila[nfa.getKaari().getLoppu().getTila()];
@@ -35,67 +38,90 @@ public class dfa {
         nollaaVierailut(nfa.getKaari().getAlku());
         etsiJaLiitaEpsilonit(nfa.getKaari().getAlku(), ' ', alkutilat, ekaDfaTila);
         nollaaVierailut(nfa.getKaari().getAlku());
-        
         for(Character c : nfa.getKirjaimet()) {
+        //    this.siirtymat[0][(indeksi + 1)] = c;
             kirjaimet[indeksi++] = c;
         }
-        
         dfa_tilat_avaimina.put(tila, alkutilat);
         dfa_setit_avaimina.put(alkutilat, tila);
         dfaLista[tila] = ekaDfaTila;
     }
-
+    
+    public void lisaaSiirtymaTauluun(char c, int alku, int loppu) {
+    //    System.out.println("------");
+    //    System.out.println("Taulussa:" + c + " lähtötila: " + alku + " lopputila: " + loppu);
+    //    System.out.println("------");
+        siirtymat[alku][loppu] = (int)c;
+    }
     
     public void luoDfa() {
         System.out.println("");
         System.out.println("LuoDFA" + "\n" + "------");        
         System.out.print("dfa tila " + tila + " = ");
-        
         for (Tila t : alkutilat) {
             System.out.print(t.getTila() + " ");
-        }   
-        
-        pino.push(tila);
-        
-        while (!pino.isEmpty()) {
-            HashSet<Tila> temp = dfa_tilat_avaimina.get(pino.pop());
-            dfaTila currentDfa = dfaLista[tila];
-            for (Tila tila : currentDfa.getNfaTilat()) {
-                if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
-                    currentDfa.setHyvaksyvaTila(true);
-                }
+            if (t.getTila() == nfa.getKaari().getLoppu().getTila()) {
+                ekaDfaTila.setHyvaksyvaTila(true);
             }
-            tila++;
+        }   
+        pino.push(tila++);
+        System.out.println("");
+        while (!pino.isEmpty()) {
+    //        System.out.println("---- tilaan " + (pino.peek() + 1) + " menevät ---");
+            HashSet<Tila> temp = dfa_tilat_avaimina.get(pino.pop());
+            
             for (char c : kirjaimet) {
                 // käydään kaikki mahdolliset siirtymät läpi jokaiselta joukkoon kuuluvalta tilalta
                 for (Tila t : temp) {
                     if (t.getSiirtyma() == c) {
+              //          System.out.println("Tilan " + t.getTila() + " siirtymä on: " + c);
                         HashSet<Tila> seuraava = new HashSet();
                         dfaTila seurDfa = new dfaTila();
                         etsiJaLiitaEpsilonit(t.getKaari().getLoppu(), ' ', seuraava, seurDfa);
                         if (dfa_setit_avaimina.containsKey(seuraava)) {
-                            
+                            // ikuinen looppi löydetty
+            //                tila--;
                             int seuraava_tila = dfa_setit_avaimina.get(seuraava);
-                            seurDfa = dfaLista[seuraava_tila];
-                            currentDfa.lisaaSiirtyma(c, seuraava_tila);
-                            
+                            seurDfa = dfaLista[tila -2];
+                            System.out.println("DFA TILA LISTASTA -2 " + (tila -2));
+                            for (Tila tila : seurDfa.getNfaTilat()) {
+                                if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
+                                    seurDfa.setHyvaksyvaTila(true);
+                                }
+                            }
+                            seurDfa.lisaaSiirtyma(c, seuraava_tila +1);
+                            System.out.println("Lisätään siirtymä: " + c + " tilaan: " + seuraava_tila );
+                            lisaaSiirtymaTauluun(c, tila -1, seuraava_tila);
                             continue;
                         }
                         
-                        dfaLista[tila] = seurDfa;
-                        currentDfa.lisaaSiirtyma(c, tila);
                         dfa_tilat_avaimina.put(tila, seuraava); 
                         dfa_setit_avaimina.put(seuraava, tila);
+                        dfaLista[tila] = seurDfa;
                         
-                        pino.push(tila);
-                        nollaaVierailut(t.getKaari().getLoppu());
+                        dfaTila edeltavaDfa = dfaLista[tila -1];
+                        edeltavaDfa.lisaaSiirtyma(c, tila);
+                        for (Tila tila : seurDfa.getNfaTilat()) {
+                                if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
+                                    seurDfa.setHyvaksyvaTila(true);
+                                }
+                            }
+                        System.out.println("Lisätään siirtymä: " + c + " tilaan: " + tila);
+                        System.out.print("Dfa tila " + tila + " = ");
+                        for (Tila x : seuraava) {
+                            System.out.print(x.getTila() + " ");
+                        }                       
+                        System.out.println("");
                         
+                        lisaaSiirtymaTauluun(c, tila-1, tila);
+                        pino.push(tila++);
+                        nollaaVierailut(t.getKaari().getLoppu());                     
                     }
                 }
-                
             }
         }
         
+        System.out.println("tila: " + tila + " " + (char)tila);
         System.out.println("loppu");
     }
     
@@ -133,7 +159,31 @@ public class dfa {
         nollaaVierailut(tila.getSeuraava2());
     }
     
-     public boolean tarkista() {
+    public void testi() {
+        /*
+        for (int i = 1; i < siirtymat.length; i++) {
+            for (int k = 0; k < siirtymat[i].length; k++) {
+                System.out.println("Siirtymat[" + i + "][" + k + "] = " + siirtymat[i][k]);
+            }
+        }
+*/
+        System.out.println("-------");
+        System.out.println("testi: ");
+        System.out.println("-------");
+        for (int i = 0; i < dfaLista.length; i++) {
+
+            if (dfaLista[i] != null) {
+                System.out.println("indeksi: " + i);
+                System.out.println(dfaLista[i].isHyvaksyvaTila());
+                for (Tila tila : dfaLista[i].getNfaTilat()) {
+                    System.out.print(tila.getTila() + ",");
+                }
+                System.out.println("");
+            }
+        }
+    }
+    
+    public boolean tarkista() {
       //  testi();
         System.out.println("---Tarkistus---");
         System.out.println("Syöte: " + syote);

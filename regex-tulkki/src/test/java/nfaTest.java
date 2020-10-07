@@ -24,9 +24,9 @@ public class nfaTest {
     public void nfaLuodaanOikein() {
         nfa.luoNfa();
         Kaari kaari = nfa.getKaari();
-        assertThat(kaari.getAlku().getTila(), is(0));
-        assertThat(kaari.getLoppu().getTila(), is(9));
-        assertThat(kaari.getAlku().getSeuraava().getTila(), is(1));
+        assertThat(kaari.getAlku().getTila(), is(1));
+        assertThat(kaari.getLoppu().getTila(), is(10));
+        assertThat(kaari.getAlku().getSeuraava().getTila(), is(2));
         assertThat(kaari.getLoppu().getSeuraava(), is(nullValue()));
     }
     

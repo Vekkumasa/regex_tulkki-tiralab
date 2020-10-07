@@ -9,7 +9,7 @@ public class nfaFragmentit {
     private int tilat;
     
     public nfaFragmentit() {
-        this.tilat = 0;
+        this.tilat = 1;
     }
     
     // Luokan metodit luovat uusia tiloja tai liittävät aiemmin luotuja

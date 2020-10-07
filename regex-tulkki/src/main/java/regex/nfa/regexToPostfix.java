@@ -30,7 +30,6 @@ public class regexToPostfix {
                 palautus += regex.charAt(regex.length() -1);
             }
         }
-        System.out.println("Konkatenaatio: " + palautus);
         return palautus;
     }
     
@@ -68,7 +67,6 @@ public class regexToPostfix {
                 }
             }
         }
-        System.out.println("Regex: " + regex + " Postfix: " + postfix);
         return postfix;
     }
     

@@ -33,8 +33,6 @@ public class UI extends Application {
     private Label match;
     private regexToPostfix postfix;
     private nfaFragmentit nfaFrag;
-    private nfa nfa;
-    private dfa dfa;
     
     private Stack<Kaari> kaaret;
     
@@ -46,7 +44,6 @@ public class UI extends Application {
         postfix = new regexToPostfix();
         this.nfaFrag = new nfaFragmentit();
         this.kaaret = new Stack();
-        this.nfa = new nfa("a|b|c|d");
     }
     @Override
     public void start(Stage window) {  
@@ -71,57 +68,32 @@ public class UI extends Application {
         inputField.setPromptText("Input");
         regexField.setPromptText("Regex");
         
-        match = new Label("It's a match");
-        match.setTextFill(Color.GREEN);
+        match = new Label("");
         
-        Button luoNfa = new Button("luoNfa");
+        Button luoNfa = new Button("Tarkista syöte");
         luoNfa.setOnAction(e -> {
-
-            kaaret.add(nfaFrag.luoKirjainTila('a')); // 0, 1
-            kaaret.add(nfaFrag.luoKirjainTila('b')); // 2, 3
-            kaaret.add(nfaFrag.luoKirjainTila('b')); // 4, 5
-            Kaari oikea = kaaret.pop();
-            Kaari vasen = kaaret.pop();
-            kaaret.add(nfaFrag.luoKonkatenaatioPisteTila(vasen, oikea));
-            kaaret.add(nfaFrag.luoPlusTila(kaaret.pop()));
-            oikea = kaaret.peek();
-            /*
-            System.out.println("ALKU: " + oikea.getAlku().getTila() + " LOPPU: " + oikea.getLoppu().getTila());
-            System.out.println("Siirtymä: " + oikea.getAlku().getSiirtyma());
-            System.out.println("Alun Seuraava: " + oikea.getAlku().getSeuraava().getTila() + " Alun seuraava2: " + oikea.getAlku().getSeuraava2());
-            System.out.println("Lopun seuraava: " + oikea.getLoppu().getSeuraava().getTila() + " Lopun seuraava2: " + oikea.getLoppu().getSeuraava2().getTila());
+            nfa nfa;
+            if (inputField.getText().isEmpty()) {
+                match.setText("Input field is empty");
+                match.setTextFill(Color.RED);
+                return;
+            } else {
+                nfa = new nfa(inputField.getText());
+                nfa.luoNfa();
+                nfa.faktatTiskiin(nfa.getKaari().getAlku());
+            }
             
-            System.out.println("Stacki: " + kaaret.size());
-*/          
-            oikea = kaaret.pop();
-            vasen = kaaret.pop();
-            kaaret.add(nfaFrag.luoKonkatenaatioPisteTila(vasen, oikea));
-            kaaret.add(nfaFrag.luoKirjainTila('a'));
-            oikea = kaaret.pop();
-            vasen = kaaret.pop();
-            kaaret.add(nfaFrag.luoKonkatenaatioPisteTila(vasen, oikea));
-            
-            Kaari kaari = kaaret.peek();
-  //          System.out.println("Alku: " + kaari.getAlku().getTila() + " Loppu: " + kaari.getLoppu().getTila());
-    //        System.out.println("Alku seuraava: " + kaari.getAlku().getSeuraava().getTila() + " loppu seuraava " + kaari.getLoppu().getSeuraava());
-      //      System.out.println("Alku seuraava2: " + kaari.getAlku().getSeuraava2() + " loppu seuraava2 " + kaari.getLoppu().getSeuraava2());
-            
-            nfa.luoNfa();
-            kaari = nfa.getKaari();
-            System.out.println("");
-  //          System.out.println("Alku: " + kaari.getAlku().getTila() + " Loppu: " + kaari.getLoppu().getTila());
-    //        System.out.println("Alku seuraava: " + kaari.getAlku().getSeuraava().getTila() + " loppu seuraava " + kaari.getLoppu().getSeuraava());
-      //      System.out.println("Alku seuraava2: " + kaari.getAlku().getSeuraava2() + " loppu seuraava2 " + kaari.getLoppu().getSeuraava2());
-            
-            System.out.println("");
-  //          nfa.faktatTiskiin(kaari.getAlku());
-            System.out.println("");
-            System.out.println("Alkutila: " + kaari.getAlku().getTila() + " Lopputila: " + kaari.getLoppu().getTila());
-            System.out.println("---DFA---");
-            System.out.println("");
-            this.dfa = new dfa(nfa, "ad");
+            dfa dfa = new dfa(nfa, regexField.getText());
             dfa.luoDfa();
-            System.out.println(dfa.tarkistaSyote());
+            if (!dfa.tarkista()) {
+                match.setText("String is not valid");
+                match.setTextFill(Color.RED);
+                System.out.println("false");
+            } else {
+                match.setText("String is valid");
+                match.setTextFill(Color.GREEN);
+                System.out.println("true");
+            }
         });
         
         mainPane.setBackground(new Background(bf));

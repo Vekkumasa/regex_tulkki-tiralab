@@ -23,7 +23,6 @@ public class nfa {
     }
     
     public void luoNfa() {
-        System.out.println(lauseke);
         Kaari seuraava, seuraava2;
         for (int i = 0; i < lauseke.length(); i++) {
             char c = lauseke.charAt(i);

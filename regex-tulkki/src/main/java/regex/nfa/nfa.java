@@ -1,12 +1,13 @@
 package regex.nfa;
 
-import java.util.Stack;
 import java.util.HashSet;
+
 import regex.domain.Kaari;
 import regex.domain.Tila;
+import regex.tietorakenteet.Pino;
 
 public class nfa {
-    private Stack<Kaari> pino;
+    private Pino<Kaari> pino;
     private String lauseke;
     private regexToPostfix rtp;
     private nfaFragmentit fragmentit;
@@ -18,12 +19,14 @@ public class nfa {
         lauseke = rtp.luoPostfix(lauseke);
         this.lauseke = lauseke;
         this.fragmentit = new nfaFragmentit();
-        this.pino = new Stack();
+        this.pino = new Pino();
         this.kirjaimet = new HashSet();
     }
     
     public void luoNfa() {
         Kaari seuraava, seuraava2;
+        
+        // Luetaan kaikki merkit lausekkeesta ja toimitaan sen mukaisesti
         for (int i = 0; i < lauseke.length(); i++) {
             char c = lauseke.charAt(i);
             switch (c) {
@@ -66,6 +69,10 @@ public class nfa {
         return this.kirjaimet;
     }
     
+    /**
+     * Pelkkää printtailua tiloista ja siirtymistä ym
+     * @param tila 
+     */
     public void faktatTiskiin(Tila tila) {
         if (tila == null || tila.isVierailtu()) {
             return;

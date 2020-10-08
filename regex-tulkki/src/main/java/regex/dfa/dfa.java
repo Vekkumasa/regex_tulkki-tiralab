@@ -5,7 +5,8 @@ import regex.nfa.nfa;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Stack;
+
+import regex.tietorakenteet.Pino;
 
 public class dfa {
     private nfa nfa;
@@ -16,26 +17,35 @@ public class dfa {
     private String syote;
     private Character[] kirjaimet;
     private int indeksi = 0;
-    private Stack<Integer> pino;
+    private Pino<Integer> pino;
     private dfaTila ekaDfaTila;
     private dfaTila[] dfaLista;
     
     public dfa(nfa nfa, String syote) {
         this.nfa = nfa;
+        // Liitetään toisiinsa kaikki NFA tilat (hashset) ja dfa tilat
         this.dfa_tilat_avaimina = new HashMap<>();
         this.dfa_setit_avaimina = new HashMap<>();
-        this.pino = new Stack();
+        this.pino = new Pino();
+        
+        // Numeroi dfa tilat
         this.tila = 1;
+        // Lisätään syötteen eteen 1 mikä tahansa merkki tarkistus metodin indekstoinnin helpottamiseksi
         this.syote = "#" + syote;
         this.kirjaimet = new Character[nfa.getKirjaimet().size()];
         this.alkutilat = new HashSet();
         this.ekaDfaTila = new dfaTila();
         this.dfaLista = new dfaTila[nfa.getKaari().getLoppu().getTila()];
         
-        nollaaVierailut(nfa.getKaari().getAlku());
+    //  nollaaVierailut metodia tulee käyttää jos UI:ssa käytetään ennen dfa:n luomista
+    //  nfa:n faktatTiskiin metodia, koska siellä vieraillaan tiloissa
+    
+    //    nollaaVierailut(nfa.getKaari().getAlku());
         etsiJaLiitaEpsilonit(nfa.getKaari().getAlku(), ' ', alkutilat, ekaDfaTila);
         nollaaVierailut(nfa.getKaari().getAlku());
         
+        // Nfa:ssa on tallennettu kaikki käytetyt kirjaimet hashsettiin eli ei ole duplikaatteja
+        // ja tässä ne kopioidaan kirjain taulukkoon
         for(Character c : nfa.getKirjaimet()) {
             kirjaimet[indeksi++] = c;
         }
@@ -57,14 +67,19 @@ public class dfa {
         
         pino.push(tila);
         
-        while (!pino.isEmpty()) {
+        while (!pino.onkoTyhja()) {
             HashSet<Tila> temp = dfa_tilat_avaimina.get(pino.pop());
             dfaTila currentDfa = getDfaLista()[tila];
+            
+            // Tarkistetaan jos tilojen joukosta löytyy nfa kaaren lopputila
+            // Jos löytyy niin kyseinen DFA tila on hyväksyvä
+            
             for (Tila tila : currentDfa.getNfaTilat()) {
                 if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
                     currentDfa.setHyvaksyvaTila(true);
                 }
             }
+            
             tila++;
             for (char c : kirjaimet) {
                 // käydään kaikki mahdolliset siirtymät läpi jokaiselta joukkoon kuuluvalta tilalta
@@ -74,30 +89,37 @@ public class dfa {
                         dfaTila seurDfa = new dfaTila();
                         etsiJaLiitaEpsilonit(t.getKaari().getLoppu(), ' ', seuraava, seurDfa);
                         if (dfa_setit_avaimina.containsKey(seuraava)) {
-                            
+                            // Ikuinen looppi löytynyt
+                            // Etsitään aikaisemmin käyty tila ja liitetään se dfa:n seuraavien listaan
                             int seuraava_tila = dfa_setit_avaimina.get(seuraava);
                             seurDfa = getDfaLista()[seuraava_tila];
-                            currentDfa.lisaaSiirtyma(c, seuraava_tila);
-                            
+                            currentDfa.lisaaSiirtyma(c, seuraava_tila);                          
                             continue;
                         }
                         
+                        // Lisätään siirtymä currentDfa:sta seuraavaan
                         dfaLista[tila] = seurDfa;
                         currentDfa.lisaaSiirtyma(c, tila);
                         dfa_tilat_avaimina.put(tila, seuraava); 
                         dfa_setit_avaimina.put(seuraava, tila);
                         
                         pino.push(tila);
-                        nollaaVierailut(t.getKaari().getLoppu());
-                        
+                        nollaaVierailut(t.getKaari().getLoppu());   
                     }
                 }
                 
             }
         }
-        
-        System.out.println("loppu");
     }
+    
+    /**
+     * Metodi etsii rekursiivisesti kaikki seuraavat tilat mihin päästään käyttämättä yhtään merkkiä,
+     * lisää ne tilat hashsettiin ja dfaTila luokan dfaTilaan
+     * @param tila
+     * @param siirtyma
+     * @param tilat
+     * @param dfaTila 
+     */
     
     public void etsiJaLiitaEpsilonit(Tila tila, char siirtyma, Set<Tila> tilat, dfaTila dfaTila) {
         if (tila == null || tila.isVierailtu()) {
@@ -121,6 +143,11 @@ public class dfa {
             etsiJaLiitaEpsilonit(tila.getSeuraava2(), siirtyma, tilat, dfaTila);
         }
     }
+    
+    /**
+     * Edeltävän metodin jäljiltä pitää vierailut asettaa takaisin falseksi
+     * @param tila 
+     */
 
     public void nollaaVierailut(Tila tila) {
         if (tila == null || tila.isVierailtu() == false) {
@@ -133,29 +160,44 @@ public class dfa {
         nollaaVierailut(tila.getSeuraava2());
     }
     
-     public boolean tarkista() {
+    /**
+     * Tarkistetaan täsmääkö syöte annettuun lausekkeeseen
+     * DFA tilassa talletetaan siirtymät HashMappiin ja jos ei halutulla merkillä löydy
+     * siirtymää niin palautetaan arvo -1. Jos saadaan arvo -1 ollaan päädytty tilaan mistä ei ole siirtymää
+     * enää seuraavaan tilaan joten palautetaan suoraan false
+     * @return 
+     */
+    
+    public boolean tarkista() {
         System.out.println("---Tarkistus---");
         System.out.println("Syöte: " + syote);
+        
+        //Pidetään kirjaa missä DFA tilassa ollaan
         int currentState = 1;
         
         for (int i = 1; i < syote.length(); i++) {
-            System.out.println("Indeksi: " + i);
+        //    System.out.println("Indeksi: " + i);
             
             if (i == syote.length() -1) {
-                System.out.println("Indeksi = syote.length eli: " +(syote.length()-1));
-                System.out.println("currentState ennen muutosta: " + currentState);
+        //        System.out.println("Indeksi = syote.length eli: " +(syote.length()-1));
+        //        System.out.println("currentState ennen muutosta: " + currentState);
                 currentState = getDfaLista()[currentState].getSiirtyma((int)syote.charAt(i));
-                System.out.println("finalState: " + currentState);
+        //        System.out.println("finalState: " + currentState);
                 
                 if (currentState == -1) {
                     return false;
                 }
                 
+                // Syöte on luettu loppuun ja currentstate arvo muutettu viimeiseen tilaan
+                // mikäli tila on hyväksyvä, hyväksytään syöte
+                
                 if (getDfaLista()[currentState].isHyvaksyvaTila()) {
-                    System.out.println("Hyväksytään: " + currentState);
+        //            System.out.println("Hyväksytään: " + currentState);
                     return true;
                 }
                 
+                // Syötettä ei ole luettu loppuun joten täytyy päivittää currentstate ja tarkistaa
+                // että tilasta löytyy siirtymä
             } else {
                 System.out.println("Currentstate: " + currentState);
                 currentState = getDfaLista()[currentState].getSiirtyma((int)syote.charAt(i));
@@ -170,6 +212,7 @@ public class dfa {
     }
 
     /**
+     * Tehty dfatestejä varten
      * @return the dfaLista
      */
     public dfaTila[] getDfaLista() {

@@ -14,9 +14,8 @@ public class nfaFragmentit {
     
     // Luokan metodit luovat uusia tiloja tai liittävät aiemmin luotuja
     // tiloja toisiin tiloihin
-    // Metodien nimet kertovat varmasti riittävästi mitä täällä tapahtuu
-    // Eli enempää kommentteja ei ole odotettavissa
     
+    // Luodaan "perus" fragmentti missä on 2 tilaa ja niiden välillä on siirtymä kirjaimella (setseuraavaa ei käytetä muuten kuin testeissä)
     public Kaari luoKirjainTila(char c) {
         Tila alku = new Tila(tilat++);
         Tila loppu = new Tila(tilat++);
@@ -29,7 +28,8 @@ public class nfaFragmentit {
         
         return kaari;
     }
-    
+    // Tai = |
+    // Pinosta otetaan kaksi päällimäistä ja yhdistetään ne toisiinsa ja palautetaan pinon päällimmäiseksi
     public Kaari luoTaiTila(Kaari seuraava, Kaari seuraava2) {
         Tila alku = new Tila(tilat++);
         Tila loppu = new Tila(tilat++);
@@ -45,7 +45,7 @@ public class nfaFragmentit {
         return kaari;
     }
 
-
+    // Otetaan pinosta päällimmäinen ja tehdään mahdollisuus palata takaisin alkuun halutessaan. Kaari palautetaan ja laiteaan takaisin pinoon
     public Kaari luoTahtiTila(Kaari edellinen) {
         Tila alku = new Tila(tilat++);
         Tila loppu = new Tila(tilat++);
@@ -64,6 +64,8 @@ public class nfaFragmentit {
         return kaari;
     }
   
+    // Sama kuin edellinen mutta edellisen alku tilasta ei ole muuta mahdollisuutta kuin käyttää siirtymä mennäkseen
+    // seuraavaan (eli edellinen loppu tilaan) ja sieltä on taas mahdollisuus mennä alkuun jos haluaa
     public Kaari luoPlusTila(Kaari edellinen) {
         Tila alku = new Tila(tilat++);
         Tila loppu = new Tila(tilat++);
@@ -81,6 +83,7 @@ public class nfaFragmentit {
         return kaari;
     }
   
+    // Yhdistetään pinon kaksi päällimäistä toisiinsa
     public Kaari luoKonkatenaatioPisteTila(Kaari vasen, Kaari oikea) {
         Kaari kaari = new Kaari(vasen.getAlku(), oikea.getLoppu());
         

@@ -1,23 +1,28 @@
 package regex.nfa;
 
-import java.util.Stack;
+import regex.tietorakenteet.Pino;
 
 public class regexToPostfix {
     
+    /**
+     * Luokka muuttaa annetun lausekkeen vastaavaksi postfix muodossa esim:
+     * a(bb)+a = abb.+.a.
+     */
     public regexToPostfix() {        
     }
     
-    public String konkatenaatiot(String regex) {
-        if (regex.length() == 1) {
-            return regex;
+    // Lisätään "." merkit konkatenoitavien merkkien väliin
+    public String konkatenaatiot(String lauseke) {
+        if (lauseke.length() == 1) {
+            return lauseke;
         }
         
         char eka, toka;
         String palautus = "";
         
-        for (int i = 0; i < regex.length() -1; i++) {
-            eka = regex.charAt(i);
-            toka = regex.charAt(i + 1);
+        for (int i = 0; i < lauseke.length() -1; i++) {
+            eka = lauseke.charAt(i);
+            toka = lauseke.charAt(i + 1);
             
             palautus += eka;
             if (eka != '(' && eka != ('|') && kirjain(toka)) {
@@ -26,34 +31,37 @@ public class regexToPostfix {
                 palautus += ".";
             }
             
-            if (i == regex.length() -2) {
-                palautus += regex.charAt(regex.length() -1);
+            if (i == lauseke.length() -2) {
+                palautus += lauseke.charAt(lauseke.length() -1);
             }
         }
         return palautus;
     }
     
-    public String luoPostfix(String regex) {
+    // https://medium.com/@gregorycernera/converting-regular-expressions-to-postfix-notation-with-the-shunting-yard-algorithm-63d22ea1cf88
+    // Sivulta löytyy tarkka seloste kuinka seuraava algoritmi toimii
+    // Lyhyesti sanottuna merkeille annetaan jokin arvo ja sen mukaan ne joko jäävät pinoon tai siirretään pinosta lopulliseen palautukseen
+    public String luoPostfix(String lauseke) {
         String postfix = "";
         char c, c1;
         int i = 0;
-        regex = konkatenaatiot(regex);
-        regex += " ";
-        Stack<Character> pino = new Stack();
+        lauseke = konkatenaatiot(lauseke);
+        lauseke += " ";
+        Pino<Character> pino = new Pino();
         pino.push(' ');
         
-        c = regex.charAt(i);
+        c = lauseke.charAt(i);
         i++;
-        while (!pino.isEmpty()) {
+        while (!pino.onkoTyhja()) {
             if (kirjain(c)) {
                 postfix += c;
-                c = regex.charAt(i);
+                c = lauseke.charAt(i);
                 i++;
             } else {
                 c1 = pino.peek();
                 if (pinossa(c1) < pinoon(c)) {
                     pino.push(c);
-                    c = regex.charAt(i);
+                    c = lauseke.charAt(i);
                     i++;
                 } else if (pinossa(c1) > pinoon(c)) {
                     postfix += pino.pop();
@@ -61,7 +69,7 @@ public class regexToPostfix {
                     // Vastakkaiset sulkumerkit tuli pinossa vastaan
                     // molemmat roskiin
                     if (pino.pop() == '(') {
-                        c = regex.charAt(i);
+                        c = lauseke.charAt(i);
                         i++;
                     }
                 }
@@ -77,6 +85,7 @@ public class regexToPostfix {
         return false;
     }
     
+    // Jo pinossa olevien merkkien arvot
     public int pinossa(char c) {
         
         if (c == '(') {
@@ -102,6 +111,7 @@ public class regexToPostfix {
         }
     }
     
+    // Pinoon menevien merkkien arvot
     public int pinoon(char c) {
         
         if (c == '(') {

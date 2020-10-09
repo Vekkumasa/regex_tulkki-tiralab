@@ -1,5 +1,10 @@
 package regex.domain;
 
+// Tilat ovat NFA tiloja.
+// Tiloilla voi olla korkeintaan 2 seuraavaa tilaa mihin sieltä päästään
+// Tiloista voi päästä seuraavaan käyttämällä yhden siirtymä merkin
+// Tai suoraan epsilon siirtymällä käyttämättä yhtään merkkiä syötteestä.
+
 public class Tila {
     private int tila;
     private Tila seuraava;

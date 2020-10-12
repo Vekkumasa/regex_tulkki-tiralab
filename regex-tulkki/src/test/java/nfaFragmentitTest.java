@@ -46,7 +46,7 @@ public class nfaFragmentitTest {
         Kaari kaari = nfa.luoTahtiTila(edellinen);
         
         assertThat(kaari.getAlku().getSeuraava().getTila(), is(1));
-        assertThat(edellinen.getLoppu().getSeuraava(), is(nullValue()));
+        assertThat(edellinen.getLoppu().getSeuraava().getTila(), is(4));
     }
     
     @Test

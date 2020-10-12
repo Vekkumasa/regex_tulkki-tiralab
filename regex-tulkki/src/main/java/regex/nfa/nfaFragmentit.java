@@ -58,9 +58,6 @@ public class nfaFragmentit {
         edellinen.getLoppu().setSeuraava(loppu);
         edellinen.getLoppu().setSeuraava2(edellinen.getAlku());
         
-        edellinen.setAlku(alku);
-        edellinen.setLoppu(loppu);
-        
         return kaari;
     }
   
@@ -77,9 +74,6 @@ public class nfaFragmentit {
         edellinen.getLoppu().setSeuraava(alku);
         edellinen.getLoppu().setSeuraava2(loppu);
         
-        edellinen.setAlku(alku);
-        edellinen.setLoppu(loppu);
-        
         return kaari;
     }
   
@@ -89,7 +83,5 @@ public class nfaFragmentit {
         
         vasen.getLoppu().setSeuraava(oikea.getAlku());
         return kaari;
-    }
-
-    
+    }    
 }

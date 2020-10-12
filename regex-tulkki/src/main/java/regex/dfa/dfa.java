@@ -30,17 +30,17 @@ public class dfa {
         
         // Numeroi dfa tilat
         this.tila = 1;
-        // Lisätään syötteen eteen 1 mikä tahansa merkki tarkistus metodin indekstoinnin helpottamiseksi
+        // Lisätään syötteen eteen 1 mikä tahansa merkki tarkistus metodin indeksoinnin helpottamiseksi
         this.syote = "#" + syote;
         this.kirjaimet = new Character[nfa.getKirjaimet().size()];
         this.alkutilat = new HashSet();
         this.ekaDfaTila = new dfaTila();
-        this.dfaLista = new dfaTila[nfa.getKaari().getLoppu().getTila()];
+        this.dfaLista = new dfaTila[nfa.getKaari().getLoppu().getTila() + 1];
         
     //  nollaaVierailut metodia tulee käyttää jos UI:ssa käytetään ennen dfa:n luomista
     //  nfa:n faktatTiskiin metodia, koska siellä vieraillaan tiloissa
     
-    //    nollaaVierailut(nfa.getKaari().getAlku());
+        nollaaVierailut(nfa.getKaari().getAlku());
         etsiJaLiitaEpsilonit(nfa.getKaari().getAlku(), ' ', alkutilat, ekaDfaTila);
         nollaaVierailut(nfa.getKaari().getAlku());
         
@@ -58,12 +58,14 @@ public class dfa {
     
     public void luoDfa() {
         System.out.println("");
-        System.out.println("LuoDFA" + "\n" + "------");        
+        System.out.println("LuoDFA" + "\n" + "------");
+        System.out.println("Alku: " + nfa.getKaari().getAlku().getTila() + " loppu: " + nfa.getKaari().getLoppu().getTila());
         System.out.print("dfa tila " + tila + " = ");
         
         for (Tila t : alkutilat) {
             System.out.print(t.getTila() + " ");
         }   
+        System.out.println("");
         
         pino.push(tila);
         
@@ -71,29 +73,44 @@ public class dfa {
             HashSet<Tila> temp = dfa_tilat_avaimina.get(pino.pop());
             dfaTila currentDfa = getDfaLista()[tila];
             
+            //System.out.println("Tilat: " + currentDfa + " setti: " + temp.toString());
             // Tarkistetaan jos tilojen joukosta löytyy nfa kaaren lopputila
             // Jos löytyy niin kyseinen DFA tila on hyväksyvä
             
+            System.out.println("Tämän jälkeen nullpointer: " + tila);
             for (Tila tila : currentDfa.getNfaTilat()) {
                 if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
                     currentDfa.setHyvaksyvaTila(true);
                 }
             }
-            
+
             tila++;
+            
+            System.out.println("Uusi tila: " + tila);
+            
             for (char c : kirjaimet) {
                 // käydään kaikki mahdolliset siirtymät läpi jokaiselta joukkoon kuuluvalta tilalta
                 for (Tila t : temp) {
                     if (t.getSiirtyma() == c) {
                         HashSet<Tila> seuraava = new HashSet();
                         dfaTila seurDfa = new dfaTila();
+                        System.out.println("Ennen epsiloneja: " + t.getTila() + " kaari.loppu: " + t.getKaari().getLoppu().getTila());
                         etsiJaLiitaEpsilonit(t.getKaari().getLoppu(), ' ', seuraava, seurDfa);
+                        nollaaVierailut(t.getKaari().getLoppu());
                         if (dfa_setit_avaimina.containsKey(seuraava)) {
                             // Ikuinen looppi löytynyt
                             // Etsitään aikaisemmin käyty tila ja liitetään se dfa:n seuraavien listaan
                             int seuraava_tila = dfa_setit_avaimina.get(seuraava);
                             seurDfa = getDfaLista()[seuraava_tila];
-                            currentDfa.lisaaSiirtyma(c, seuraava_tila);                          
+                            currentDfa.lisaaSiirtyma(c, seuraava_tila);
+                            
+                            System.out.println("Dfa tiloja loopissa: ");
+                            for (Tila t1 : currentDfa.getNfaTilat()) {
+                                System.out.print(t1.getTila() + ", ");
+                            }
+                            System.out.println("");
+                            
+                            tila = dfa_setit_avaimina.get(seuraava);
                             continue;
                         }
                         
@@ -102,9 +119,13 @@ public class dfa {
                         currentDfa.lisaaSiirtyma(c, tila);
                         dfa_tilat_avaimina.put(tila, seuraava); 
                         dfa_setit_avaimina.put(seuraava, tila);
+                        System.out.println("DFA tiloja: ");
+                        for (Tila t1 : seurDfa.getNfaTilat()) {
+                                System.out.print(t1.getTila() + ", ");
+                            }
+                        System.out.println("");
                         
                         pino.push(tila);
-                        nollaaVierailut(t.getKaari().getLoppu());   
                     }
                 }
                 
@@ -125,7 +146,9 @@ public class dfa {
         if (tila == null || tila.isVierailtu()) {
             return;
         }
+        
         /*
+        System.out.println("");
         System.out.println("Liitä metodi" +
                 "\n" + "tila: " + tila.getTila() + 
                 "\n" + "Seuraava: " + tila.getSeuraava() + 
@@ -133,6 +156,7 @@ public class dfa {
                 "\n" + "Siirtymä: " + tila.getSiirtyma() +
                 "\n" + "------"); 
         */
+        
         tila.setVierailtu(true);
         
         tilat.add(tila);
@@ -169,6 +193,7 @@ public class dfa {
      */
     
     public boolean tarkista() {
+        //printtaaDfaTilat();
         System.out.println("---Tarkistus---");
         System.out.println("Syöte: " + syote);
         
@@ -217,5 +242,17 @@ public class dfa {
      */
     public dfaTila[] getDfaLista() {
         return dfaLista;
+    }
+    
+    public void printtaaDfaTilat() {
+        System.out.println("PRINTTAUS");
+        for (int i = 1; i < dfaLista.length; i++) {
+            System.out.println("Tila: " + i);
+            System.out.println("Nfa tilat: ");
+            for (int k = 0; k < dfaLista[i].getNfaTilat().size(); k++) {
+                System.out.print(dfaLista[i].getNfaTilat().get(k).getTila() + ", ");
+            }
+            System.out.println("");
+        }
     }
 }

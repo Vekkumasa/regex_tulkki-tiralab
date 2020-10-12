@@ -80,7 +80,7 @@ public class UI extends Application {
             } else {
                 nfa = new nfa(inputField.getText());
                 nfa.luoNfa();
-            //    nfa.faktatTiskiin(nfa.getKaari().getAlku());
+                nfa.faktatTiskiin(nfa.getKaari().getAlku());
             }
             
             dfa dfa = new dfa(nfa, regexField.getText());

@@ -7,15 +7,31 @@ public class dfaTila {
     private ArrayList<Tila> nfaTilat;
     private HashMap<Integer, Integer> siirtymat;
     private boolean hyvaksyvaTila;
+    private boolean kasitelty;
+    private int tila;
     
-    public dfaTila() {
+    public dfaTila(int tila) {
         this.nfaTilat = new ArrayList();
         this.siirtymat = new HashMap();
         this.hyvaksyvaTila = false;
+        this.kasitelty = false;
+        this.tila = tila;
     }
     
     public void lisaaTila(Tila tila) {
         getNfaTilat().add(tila);
+    }
+    
+    public int getTila() {
+        return this.tila;
+    }
+    
+    public void setKasitelty() {
+        this.kasitelty = true;
+    }
+    
+    public boolean getKasitelty() {
+        return this.kasitelty;
     }
     
     public int getSiirtyma(int siirtyma) {

@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 import regex.tietorakenteet.Pino;
 
-public class dfa {
+public class kopio {
     private nfa nfa;
     private HashMap<Integer, HashSet<Tila>> dfa_tilat_avaimina;
     private HashMap<HashSet<Tila>, Integer> dfa_setit_avaimina;
@@ -21,7 +21,7 @@ public class dfa {
     private dfaTila ekaDfaTila;
     private dfaTila[] dfaLista;
     
-    public dfa(nfa nfa, String syote) {
+    public kopio(nfa nfa, String syote) {
         this.nfa = nfa;
         // Liitetään toisiinsa kaikki NFA tilat (hashset) ja dfa tilat
         this.dfa_tilat_avaimina = new HashMap<>();
@@ -34,7 +34,7 @@ public class dfa {
         this.syote = "#" + syote;
         this.kirjaimet = new Character[nfa.getKirjaimet().size()];
         this.alkutilat = new HashSet();
-        this.ekaDfaTila = new dfaTila(this.tila);
+        this.ekaDfaTila = new dfaTila();
         this.dfaLista = new dfaTila[nfa.getKaari().getLoppu().getTila() + 1];
         
     //  nollaaVierailut metodia tulee käyttää jos UI:ssa käytetään ennen dfa:n luomista
@@ -60,71 +60,101 @@ public class dfa {
         System.out.println("");
         System.out.println("LuoDFA" + "\n" + "------");
         System.out.println("Alku: " + nfa.getKaari().getAlku().getTila() + " loppu: " + nfa.getKaari().getLoppu().getTila());
+        System.out.print("dfa tila " + tila + " = ");
+        
+        for (Tila t : alkutilat) {
+            System.out.print(t.getTila() + " ");
+        }   
+        System.out.println("");
         
         pino.push(tila);
         
         while (!pino.onkoTyhja()) {
-            int luku = pino.pop();
-            HashSet<Tila> temp = dfa_tilat_avaimina.get(luku);
-            dfaTila currentDfa = dfaLista[luku];
-            System.out.println("DfaTila: " + this.tila + " Käsittelyssä");
-            System.out.println("Tämänhetkisen hashsetin hashcode: " + temp.hashCode());
+            HashSet<Tila> temp = dfa_tilat_avaimina.get(pino.pop());
+            dfaTila currentDfa = dfaLista[tila];
             
-            for (Tila t : currentDfa.getNfaTilat()) {
-                System.out.print(t.getTila() + " ");
-            }  
-            System.out.println("");
-            if (currentDfa.getKasitelty()) {
-                continue;
-            }
-            
-            for (Tila t : currentDfa.getNfaTilat()) {
-                for (char c : kirjaimet) {
-                    if (t.getSiirtyma() == c) {
-                        dfaTila uusi = luoDfaTila(t.getKaari().getLoppu());
-                        currentDfa.lisaaSiirtyma(c, uusi.getTila());
-                        System.out.println("Currentdfa lisätty siirtymä: " + c + " tilaan: " + uusi.getTila());
-                    }
+            //System.out.println("Tilat: " + currentDfa + " setti: " + temp.toString());
+            // Tarkistetaan jos tilojen joukosta löytyy nfa kaaren lopputila
+            // Jos löytyy niin kyseinen DFA tila on hyväksyvä
+                
+            for (Tila tila : currentDfa.getNfaTilat()) {
+                if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
+                    currentDfa.setHyvaksyvaTila(true);
                 }
             }
-            System.out.println(currentDfa.getTila() + " on käsitelty");
-            currentDfa.setKasitelty();
+            
+            tila++;
+            System.out.println("Uusi tila: " + tila);
+            
+            // käydään kaikki mahdolliset siirtymät läpi jokaiselta joukkoon kuuluvalta tilalta
+            for (Tila t : temp) {
+                for (char c : kirjaimet) {
+                    if (t.getSiirtyma() == c) {
+                        
+                        HashSet<Tila> seuraava = new HashSet();
+                        dfaTila seurDfa = new dfaTila();
+                        
+                        System.out.println("Ennen epsiloneja: " + t.getTila() + " kaari.loppu: " + t.getKaari().getLoppu().getTila());
+                        
+                        etsiJaLiitaEpsilonit(t.getKaari().getLoppu(), seuraava, seurDfa);
+                        nollaaVierailut(t.getKaari().getLoppu());
+                        
+                        if (dfa_setit_avaimina.containsKey(seuraava)) {
+                            // Ikuinen looppi löytynyt
+                            // Etsitään aikaisemmin käyty tila ja liitetään se dfa:n seuraavien listaan
+                            int seuraava_tila = dfa_setit_avaimina.get(seuraava);
+                            currentDfa.lisaaSiirtyma(c, seuraava_tila);
+                            
+                            System.out.println("Dfa tiloja loopissa: ");
+                            currentDfa.getNfaTilat().forEach((t1) -> {
+                                System.out.print(t1.getTila() + ", ");
+                            });
+                            System.out.println("");
+                            
+
+                            continue;
+                        }
+                        
+                        // Lisätään siirtymä currentDfa:sta seuraavaan
+                        dfaLista[tila] = seurDfa;
+                        currentDfa.lisaaSiirtyma(c, tila);
+                        dfa_tilat_avaimina.put(tila, seuraava); 
+                        dfa_setit_avaimina.put(seuraava, tila);
+                        System.out.println("DFA tiloja: ");
+                        for (Tila t1 : seurDfa.getNfaTilat()) {
+                                System.out.print(t1.getTila() + ", ");
+                            }
+                        System.out.println("");
+                        
+                        pino.push(tila);
+                    }
+                }
+                
+            }
         }
     }
     
-    public dfaTila luoDfaTila(Tila t) {
-        this.tila++;
-        dfaTila uusi = new dfaTila(this.tila);
+    public dfaTila luoDfaTila(Tila tila, boolean vanha) {
+        dfaTila uusi = new dfaTila();
         HashSet<Tila> seuraava = new HashSet();
         
-        etsiJaLiitaEpsilonit(t, seuraava, uusi);
-        nollaaVierailut(t);
-        
-        
+        etsiJaLiitaEpsilonit(tila, seuraava, uusi);
+        nollaaVierailut(tila);
         
         if (dfa_setit_avaimina.containsKey(seuraava)) {
-            System.out.println("Jo valmiiksi olevan hashsetin hashcode: " + seuraava.hashCode());
-            System.out.println("Ifissä");
-            uusi = dfaLista[dfa_setit_avaimina.get(seuraava)];
-            this.tila--;
-            return uusi;
+            int tilaNro = dfa_setit_avaimina.get(seuraava);
+            vanha = true;
+            return dfaLista[tilaNro];
             
         } else {
-            System.out.println("Elsessä");
-            for (Tila tila : uusi.getNfaTilat()) {
-                if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
+            for (Tila t1 : uusi.getNfaTilat()) {
+                if (t1.getTila() == nfa.getKaari().getLoppu().getTila()) {
                     uusi.setHyvaksyvaTila(true);
                 }
             }
-            
+            this.tila++;
             dfaLista[this.tila] = uusi;
-            this.pino.push(this.tila);
-            System.out.println("Pushataan pinoon: " + this.tila);
-            dfa_setit_avaimina.put(seuraava, this.tila);
-            dfa_tilat_avaimina.put(this.tila, seuraava);
-            System.out.println("Uuden luodun hashsetin hashcode: " + seuraava.hashCode());
         }
-        
         return uusi;
     }
     

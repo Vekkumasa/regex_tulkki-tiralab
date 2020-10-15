@@ -1,6 +1,5 @@
 package algoritmit;
 
-import java.util.ArrayList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,6 +15,7 @@ import regex.dfa.dfa;
 import regex.nfa.nfa;
 import regex.domain.*;
 import java.util.HashSet;
+import regex.tietorakenteet.ArrayList;
 
 public class dfaTest {
     
@@ -40,8 +40,7 @@ public class dfaTest {
     public void dfaLuodaanOikein1() {
         dfa.luoDfa();
         dfaTila[] dfaLista = dfa.getDfaLista();
-        ArrayList<Tila> nfaTila = new ArrayList();
-        nfaTila.addAll(dfaLista[1].getNfaTilat());
+        ArrayList<Tila> nfaTila = dfaLista[1].getNfaTilat();
         assertThat(nfaTila.get(0).getTila(), is(1));
     }
     
@@ -106,8 +105,7 @@ public class dfaTest {
     public void dfaLuodaanOikein5() {
         dfa.luoDfa();
         dfaTila[] dfaLista = dfa.getDfaLista();
-        ArrayList<Tila> nfaTila = new ArrayList();
-        nfaTila.addAll(dfaLista[5].getNfaTilat());
+        ArrayList<Tila> nfaTila = dfaLista[5].getNfaTilat();
         assertThat(nfaTila.get(0).getTila(), is(10));
     }
     

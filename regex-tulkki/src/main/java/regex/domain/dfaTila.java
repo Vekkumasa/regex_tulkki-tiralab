@@ -1,7 +1,7 @@
 package regex.domain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import regex.tietorakenteet.ArrayList;
 
 public class dfaTila {
     private ArrayList<Tila> nfaTilat;
@@ -40,13 +40,6 @@ public class dfaTila {
     
     public void lisaaSiirtyma(int siirtyma, int dfaTila) {
         this.siirtymat.put(siirtyma, dfaTila);
-    }
-    
-    public String printtaa() {
-        for (int i = 0; i < this.getNfaTilat().size(); i++) {
-            System.out.println(this.getNfaTilat().get(i).getTila());
-        }
-        return "";
     }
 
     /**

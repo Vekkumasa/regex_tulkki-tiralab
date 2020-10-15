@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import regex.tietorakenteet.Pino;
+import regex.tietorakenteet.ArrayList;
 
 public class dfa {
     private nfa nfa;
@@ -20,6 +21,7 @@ public class dfa {
     private Pino<Integer> pino;
     private dfaTila ekaDfaTila;
     private dfaTila[] dfaLista;
+    private ArrayList<Tila> array;
     
     public dfa(nfa nfa, String syote) {
         this.nfa = nfa;
@@ -27,7 +29,7 @@ public class dfa {
         this.dfa_tilat_avaimina = new HashMap<>();
         this.dfa_setit_avaimina = new HashMap<>();
         this.pino = new Pino();
-        
+        this.array = new ArrayList();
         // Numeroi dfa tilat
         this.tila = 1;
         // Lisätään syötteen eteen 1 mikä tahansa merkki tarkistus metodin indeksoinnin helpottamiseksi
@@ -54,7 +56,6 @@ public class dfa {
         dfa_setit_avaimina.put(alkutilat, tila);
         dfaLista[tila] = ekaDfaTila;
     }
-
     
     public void luoDfa() {
         System.out.println("");
@@ -68,17 +69,18 @@ public class dfa {
             HashSet<Tila> temp = dfa_tilat_avaimina.get(luku);
             dfaTila currentDfa = dfaLista[luku];
             System.out.println("DfaTila: " + this.tila + " Käsittelyssä");
-            System.out.println("Tämänhetkisen hashsetin hashcode: " + temp.hashCode());
             
-            for (Tila t : currentDfa.getNfaTilat()) {
-                System.out.print(t.getTila() + " ");
-            }  
+            array = currentDfa.getNfaTilat();
+            for (int i = 0; i < array.size(); i++) {
+                System.out.print(array.get(i).getTila() + " ");
+            } 
             System.out.println("");
             if (currentDfa.getKasitelty()) {
                 continue;
             }
             
-            for (Tila t : currentDfa.getNfaTilat()) {
+            for (int i = 0; i < array.size(); i++) {
+                Tila t = array.get(i);
                 for (char c : kirjaimet) {
                     if (t.getSiirtyma() == c) {
                         dfaTila uusi = luoDfaTila(t.getKaari().getLoppu());
@@ -100,10 +102,9 @@ public class dfa {
         etsiJaLiitaEpsilonit(t, seuraava, uusi);
         nollaaVierailut(t);
         
-        
+        ArrayList<Tila> tilat = uusi.getNfaTilat();
         
         if (dfa_setit_avaimina.containsKey(seuraava)) {
-            System.out.println("Jo valmiiksi olevan hashsetin hashcode: " + seuraava.hashCode());
             System.out.println("Ifissä");
             uusi = dfaLista[dfa_setit_avaimina.get(seuraava)];
             this.tila--;
@@ -111,7 +112,8 @@ public class dfa {
             
         } else {
             System.out.println("Elsessä");
-            for (Tila tila : uusi.getNfaTilat()) {
+            for (int i = 0; i < tilat.size(); i++) {
+                Tila tila = tilat.get(i);
                 if (tila.getTila() == nfa.getKaari().getLoppu().getTila()) {
                     uusi.setHyvaksyvaTila(true);
                 }
@@ -122,7 +124,6 @@ public class dfa {
             System.out.println("Pushataan pinoon: " + this.tila);
             dfa_setit_avaimina.put(seuraava, this.tila);
             dfa_tilat_avaimina.put(this.tila, seuraava);
-            System.out.println("Uuden luodun hashsetin hashcode: " + seuraava.hashCode());
         }
         
         return uusi;

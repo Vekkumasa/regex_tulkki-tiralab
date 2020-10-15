@@ -54,6 +54,26 @@ public class pinoTest {
     
     @Test
     public void pinoOnTaynna() {
-        
+        for (int i = 0; i < 10; i++) {
+            pino.push(i);  
+        }
+        assertThat(pino.onkoTaynna(), is(true));
+    }
+    
+    @Test
+    public void pinoPeek() {
+        pino.push(3);
+        pino.push(4);
+        assertThat(pino.peek(), is(4));
+        assertThat(pino.peek(), is(4));
+    }
+    
+    @Test
+    public void getKoko() {
+        assertThat(pino.getKoko(), is(10));
+        for (int i = 0; i < 11; i++) {
+            pino.push(i);
+        }
+        assertThat(pino.getKoko(), is(20));
     }
 }

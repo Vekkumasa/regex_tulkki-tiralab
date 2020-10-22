@@ -1,18 +1,18 @@
 package regex.domain;
 
-import java.util.HashMap;
-import regex.tietorakenteet.ArrayList;
+import regex.tietorakenteet.Lista;
+import regex.tietorakenteet.HajautusTaulu;
 
 public class dfaTila {
-    private ArrayList<Tila> nfaTilat;
-    private HashMap<Integer, Integer> siirtymat;
+    private Lista<Tila> nfaTilat;
+    private HajautusTaulu<Integer, Integer> siirtymat;
     private boolean hyvaksyvaTila;
     private boolean kasitelty;
     private int tila;
     
     public dfaTila(int tila) {
-        this.nfaTilat = new ArrayList();
-        this.siirtymat = new HashMap();
+        this.nfaTilat = new Lista();
+        this.siirtymat = new HajautusTaulu();
         this.hyvaksyvaTila = false;
         this.kasitelty = false;
         this.tila = tila;
@@ -45,7 +45,7 @@ public class dfaTila {
     /**
      * @return the nfaTilat
      */
-    public ArrayList<Tila> getNfaTilat() {
+    public Lista<Tila> getNfaTilat() {
         return nfaTilat;
     }
     

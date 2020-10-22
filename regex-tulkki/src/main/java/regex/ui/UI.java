@@ -23,7 +23,6 @@ import regex.nfa.nfaFragmentit;
 import regex.nfa.regexToPostfix;
 import regex.nfa.nfa;
 import regex.domain.*;
-import java.util.Stack;
 import regex.dfa.dfa;
 
 public class UI extends Application {
@@ -34,7 +33,6 @@ public class UI extends Application {
     private regexToPostfix postfix;
     private nfaFragmentit nfaFrag;
     
-    private Stack<Kaari> kaaret;
     
     @Override
     public void init() throws Exception {
@@ -43,7 +41,6 @@ public class UI extends Application {
          new Insets(0.0, 0.0, 0.0, 0.0));
         postfix = new regexToPostfix();
         this.nfaFrag = new nfaFragmentit();
-        this.kaaret = new Stack();
     }
     @Override
     public void start(Stage window) {  
@@ -74,25 +71,28 @@ public class UI extends Application {
         luoNfa.setOnAction(e -> {
             nfa nfa;
             if (inputField.getText().isEmpty()) {
-                match.setText("Input field is empty");
+                match.setText("Lauseke kenttä on tyhjä");
                 match.setTextFill(Color.RED);
                 return;
+                
+            } else if (!tarkistaMerkit(inputField.getText()) ) {
+                match.setText("Sallitut merkit ovat: * , + , ( , ) ja |");
+                match.setTextFill(Color.RED); 
+                return;
+                
             } else {
                 nfa = new nfa(inputField.getText());
                 nfa.luoNfa();
-                nfa.faktatTiskiin(nfa.getKaari().getAlku());
             }
             
             dfa dfa = new dfa(nfa, regexField.getText());
             dfa.luoDfa();
             if (!dfa.tarkista()) {
-                match.setText("String is not valid");
+                match.setText("Hylätty syöte");
                 match.setTextFill(Color.RED);
-                System.out.println("false");
             } else {
-                match.setText("String is valid");
+                match.setText("Hyväksytty syöte");
                 match.setTextFill(Color.GREEN);
-                System.out.println("true");
             }
         });
         
@@ -106,6 +106,32 @@ public class UI extends Application {
         window.setScene(mainScene);
         window.show();
     }
+    
+    public boolean tarkistaMerkit(String lauseke) {
+        for (int i = 0; i < lauseke.length(); i++) {
+            char c = lauseke.charAt(i);
+            if (!sallitutMerkit(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Tarkistetaan että lausekkeen merkit ovat joko isoja/pieniä kirjaimia, numeroita tai
+     * joku seuraavista erikoismerkeistä: + , * , ( , ) , | 
+     * @param c
+     * @return 
+     */
+    public boolean sallitutMerkit(char c) {
+        if (c == 40 || c == 41 || c == 42 || c == 43 || c ==  124) {
+            return true;
+        } else if (c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <=  57) {
+            return true;
+        }
+        return false;
+    }
+    
     public static void main(String[] args) {
         launch(args);
     }

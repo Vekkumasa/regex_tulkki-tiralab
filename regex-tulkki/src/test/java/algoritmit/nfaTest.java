@@ -28,7 +28,7 @@ public class nfaTest {
         Kaari kaari = nfa.getKaari();
         assertThat(kaari.getAlku().getTila(), is(1));
         assertThat(kaari.getLoppu().getTila(), is(10));
-        assertThat(kaari.getAlku().getSeuraava().getTila(), is(2));
+        assertThat(kaari.getAlku().getKaari().getLoppu().getTila() , is(2));
         assertThat(kaari.getLoppu().getSeuraava(), is(nullValue()));
     }
     

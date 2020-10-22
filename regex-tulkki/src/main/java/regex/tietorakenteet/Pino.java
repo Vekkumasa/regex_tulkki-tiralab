@@ -1,15 +1,15 @@
 package regex.tietorakenteet;
 
+/**
+ * Pino tietorakenne
+ * @author ylira
+ * @param <T> 
+ */
+
 public class Pino<T> {
     private T[] taulukko;
     private int paallimmainen;
     private int koko;
-    
-    public Pino(int koko) {
-        this.koko = koko;
-        taulukko = (T[]) new Object[this.koko];
-        paallimmainen = -1;
-    }
     
     public Pino() {
         this.koko = 10;
@@ -17,6 +17,11 @@ public class Pino<T> {
         paallimmainen = -1;
     }
     
+    /**
+     * Tallenetaan alkio pinon päällimmäiseksi
+     * Mikäli pino on täynnä, kasvatetaan pinon kokoa.
+     * @param luku 
+     */
     public void push(T luku) {
         if (onkoTaynna()) {
             this.koko = this.koko * 2;

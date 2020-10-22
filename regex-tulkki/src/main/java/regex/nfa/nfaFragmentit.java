@@ -15,7 +15,9 @@ public class nfaFragmentit {
     // Luokan metodit luovat uusia tiloja tai liittävät aiemmin luotuja
     // tiloja toisiin tiloihin
     
-    // Luodaan "perus" fragmentti missä on 2 tilaa ja niiden välillä on siirtymä kirjaimella (setseuraavaa ei käytetä muuten kuin testeissä)
+    // Luodaan "perus" fragmentti missä on 2 tilaa ja niiden välillä on siirtymä kirjaimella
+    // tai numerolla
+    
     public Kaari luoKirjainTila(char c) {
         Tila alku = new Tila(tilat++);
         Tila loppu = new Tila(tilat++);
@@ -28,8 +30,14 @@ public class nfaFragmentit {
         
         return kaari;
     }
-    // Tai = |
-    // Pinosta otetaan kaksi päällimäistä ja yhdistetään ne toisiinsa ja palautetaan pinon päällimmäiseksi
+
+    /**
+     * Luodaan kaksi uutta tilaa ja asetetaan kaari näiden väliin
+     * Pinosta otetaan kaksi päällimäistä ja yhdistetään ne uuteen luotuun tilaan
+     * @param seuraava
+     * @param seuraava2
+     * @return 
+     */
     public Kaari luoTaiTila(Kaari seuraava, Kaari seuraava2) {
         Tila alku = new Tila(tilat++);
         Tila loppu = new Tila(tilat++);
@@ -44,8 +52,14 @@ public class nfaFragmentit {
         
         return kaari;
     }
-
-    // Otetaan pinosta päällimmäinen ja tehdään mahdollisuus palata takaisin alkuun halutessaan. Kaari palautetaan ja laiteaan takaisin pinoon
+    
+    /**
+     * Tehdään uusi kaari.
+     * Kaaresta voi siirtyä edeltävän alkuun tai loppuun
+     * Edeltävän kaaren lopusta voi palata takaisin alkuun tai uuden kaaren loppuun
+     * @param edellinen
+     * @return 
+     */
     public Kaari luoTahtiTila(Kaari edellinen) {
         Tila alku = new Tila(tilat++);
         Tila loppu = new Tila(tilat++);
@@ -63,6 +77,14 @@ public class nfaFragmentit {
   
     // Sama kuin edellinen mutta edellisen alku tilasta ei ole muuta mahdollisuutta kuin käyttää siirtymä mennäkseen
     // seuraavaan (eli edellinen loppu tilaan) ja sieltä on taas mahdollisuus mennä alkuun jos haluaa
+    
+    /**
+     * Tehdään uusi kaari.
+     * Kaaresta voi siirtyä edeltävän alkuun.
+     * Edeltävän kaaren lopusta voi siirtyä takaisin alkuun tai uuden luodun kaaren loppuun
+     * @param edellinen
+     * @return 
+     */
     public Kaari luoPlusTila(Kaari edellinen) {
         Tila alku = new Tila(tilat++);
         Tila loppu = new Tila(tilat++);
@@ -71,13 +93,18 @@ public class nfaFragmentit {
         
         alku.setSeuraava(edellinen.getAlku());
         
-        edellinen.getLoppu().setSeuraava(alku);
+        edellinen.getLoppu().setSeuraava(edellinen.getAlku());
         edellinen.getLoppu().setSeuraava2(loppu);
         
         return kaari;
     }
   
-    // Yhdistetään pinon kaksi päällimäistä toisiinsa
+    /**
+     * Yhdistetään kaksi pinon päällimäistä kaarta toisiinsa
+     * @param vasen
+     * @param oikea
+     * @return 
+     */
     public Kaari luoKonkatenaatioPisteTila(Kaari vasen, Kaari oikea) {
         Kaari kaari = new Kaari(vasen.getAlku(), oikea.getLoppu());
         

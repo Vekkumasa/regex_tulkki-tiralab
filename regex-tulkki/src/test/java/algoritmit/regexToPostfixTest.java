@@ -81,4 +81,10 @@ public class regexToPostfixTest {
         String testi = regex.konkatenaatiot("a(bb)+a");
         assertThat(testi, is("a.(b.b)+.a"));
     }
+    
+    @Test
+    public void merkkijono110() {
+        String testi = regex.konkatenaatiot("abcdefgh");
+        assertThat(testi, is("a.b.c.d.e.f.g.h"));
+    }
 }

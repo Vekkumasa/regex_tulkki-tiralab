@@ -23,17 +23,24 @@ public class nfa {
         this.kirjaimet = new HashSet();
     }
     
+    /**
+     * Metodissa käydään lauseke läpi merkki kerrallaan ja luodaan
+     * merkkiä vastaava nfafragmentti. 
+     * Lopputuloksena saadaan yksi Kaari olio minkä alkutilasta
+     * on reitti lopputilaan, joko epsilon siirtymiä tai "normaaleja" siirtymiä
+     * käyttämällä.
+     */
+    
     public void luoNfa() {
         Kaari seuraava, seuraava2;
         
-        // Luetaan kaikki merkit lausekkeesta ja toimitaan sen mukaisesti
         for (int i = 0; i < lauseke.length(); i++) {
             char c = lauseke.charAt(i);
             switch (c) {
                 case '|':
                     seuraava2 = pino.pop();
                     seuraava = pino.pop();
-                    pino.push(fragmentit.luoTaiTila(seuraava, seuraava2)); 
+                    pino.push(fragmentit.luoTaiTila(seuraava2, seuraava)); 
                     break;
                     
                 case '*':
@@ -65,12 +72,17 @@ public class nfa {
         return this.kaari;
     }
     
+    /**
+     * Dfa:lle tarvitaan mahdolliset kirjaimet mitä käytetään siirtymissä
+     * ilman duplikaatteja.
+     * @return 
+     */
     public HashSet<Character> getKirjaimet() {
         return this.kirjaimet;
     }
     
     /**
-     * Pelkkää printtailua tiloista ja siirtymistä ym
+     * Printtailua kaikista nfa tiloista ja siirtymistä.
      * @param tila 
      */
     public void faktatTiskiin(Tila tila) {

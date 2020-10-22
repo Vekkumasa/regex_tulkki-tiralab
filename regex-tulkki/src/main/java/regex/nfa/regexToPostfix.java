@@ -11,7 +11,11 @@ public class regexToPostfix {
     public regexToPostfix() {        
     }
     
-    // Lisätään "." merkit konkatenoitavien merkkien väliin
+    /**
+     * Lisätään "." merkit konkatenoitavien merkkien väliin
+     * @param lauseke
+     * @return 
+     */
     public String konkatenaatiot(String lauseke) {
         if (lauseke.length() == 1) {
             return lauseke;
@@ -25,7 +29,7 @@ public class regexToPostfix {
             toka = lauseke.charAt(i + 1);
             
             palautus += eka;
-            if (eka != '(' && eka != ('|') && kirjain(toka)) {
+            if (eka != '(' && eka != '|' && kirjain(toka)) {
                 palautus += ".";
             } else if (toka == '(' && eka != '(' && eka != '|') {
                 palautus += ".";
@@ -38,9 +42,15 @@ public class regexToPostfix {
         return palautus;
     }
     
-    // https://medium.com/@gregorycernera/converting-regular-expressions-to-postfix-notation-with-the-shunting-yard-algorithm-63d22ea1cf88
-    // Sivulta löytyy tarkka seloste kuinka seuraava algoritmi toimii
-    // Lyhyesti sanottuna merkeille annetaan jokin arvo ja sen mukaan ne joko jäävät pinoon tai siirretään pinosta lopulliseen palautukseen
+    
+    /**
+     * https://medium.com/@gregorycernera/converting-regular-expressions-to-postfix-notation-with-the-shunting-yard-algorithm-63d22ea1cf88
+     * Sivulta löytyy tarkka seloste kuinka seuraava algoritmi toimii
+     * Lyhyesti sanottuna merkeille annetaan jokin arvo ja sen mukaan ne joko jäävät pinoon tai siirretään pinosta lopulliseen palautukseen
+     * Kirjaimet siirretään suoraan lopulliseen palautukseen
+     * @param lauseke
+     * @return 
+     */ 
     public String luoPostfix(String lauseke) {
         String postfix = "";
         char c, c1;
@@ -78,8 +88,13 @@ public class regexToPostfix {
         return postfix;
     }
     
+    /**
+     * Tarkistetaan onko kirjain a-z tai A-Z tai 0-9
+     * @param c
+     * @return 
+     */
     public boolean kirjain(char c) {
-        if (c >= 97 && c <= 122) {
+        if (c >= 97 && c <= 122 || c >= 65 && c <= 90 || c >= 48 && c <=  57) {
             return true;
         }
         return false;

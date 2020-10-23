@@ -33,16 +33,8 @@ talletetaan hashmappiin.
 
 ### Aikavaativuus
 
-Koska nfa:n muuttaminen dfa:ksi saattaa luoda 2^n tilaa, missä n on nfa:ssa olevien tilojen määrä niin aikavaativuus on O(2^n)
-
-### Paranneltavaa
-
-Sovelluksen tehokkuus kasvaisi huomattavasti jos tekisi erilliset painikkeet syötteen tarkistamiselle ja automaattien luomiselle.
-Sovelluksen tehokkuuden pullonkaulaksi muodostuu nfa:n muuttaminen dfa:ksi joten jos tämän vaiheen eriyttäisi tarkistamisesta, voisi
-samalle säännölliselle lausekkeelle tehdä nopeasti tarkistuksia eri syötteillä.
-
-Nfa:n luomisessa (nfaFragmentit luokassa) luodaan uusia tiloja "*" , "+" ja "|" erikoismerkeille, mikäli saisi tämän vaiheen toimimaan ilman
-uusien tilojen luomista niin sovelluksella pystyisi tarkistamaan pidempiä lausekkeita tehokkaammin.
+Nfa:n luomisessa (nfaFragmentit luokassa) luodaan uusia tiloja "*" , "+" ja "|" erikoismerkeille, 
+mikäli saisi tämän vaiheen toimimaan ilman uusien tilojen luomista niin sovelluksella pystyisi tarkistamaan pidempiä lausekkeita tehokkaammin.
 
 #### Lähteet
 
@@ -51,7 +43,7 @@ Eniten käytetyt lähteet (Tarkemmin löytyy määrittelydokumentista, mutta suu
 * https://moodle.helsinki.fi/pluginfile.php/2620710/mod_resource/content/21/lama001-259.pdf
 * https://swtch.com/~rsc/regexp/regexp1.html
 * https://medium.com/@gregorycernera/converting-regular-expressions-to-postfix-notation-with-the-shunting-yard-algorithm-63d22ea1cf88
-* https://www.cs.york.ac.uk/fp/lsa/lectures/REToC.pdf
+
 
 
 

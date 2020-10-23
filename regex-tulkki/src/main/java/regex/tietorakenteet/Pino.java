@@ -24,14 +24,18 @@ public class Pino<T> {
      */
     public void push(T luku) {
         if (onkoTaynna()) {
-            this.koko = this.koko * 2;
+            kasvataPinoa();
+        }
+        taulukko[++paallimmainen] = luku;
+    }
+    
+    public void kasvataPinoa() {
+        this.koko = this.koko * 2;
             T[] uusiTaulukko = (T[]) new Object[this.koko];          
             for (int i = 0; i < taulukko.length; i++) {
                 uusiTaulukko[i] = taulukko[i];
-                this.taulukko = uusiTaulukko;
             }
-        }
-        taulukko[++paallimmainen] = luku;
+        this.taulukko = uusiTaulukko;
     }
     
     public boolean onkoTaynna() {

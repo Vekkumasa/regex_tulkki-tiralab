@@ -172,22 +172,4 @@ public class HajautusTaulu<K, V> {
             }
         } 
     }
-    
-    @Override
-    public boolean equals(Object verrattava) {
-        if (this == verrattava) {
-            return true;
-        }
-        
-        if (!(verrattava instanceof HajautusTaulu)) {
-            return false;
-        }
-        
-        HajautusTaulu uusi = (HajautusTaulu) verrattava;
-        
-        if (this.taulu.equals(uusi)) {
-            return true;
-        }
-        return false;
-    }
 }

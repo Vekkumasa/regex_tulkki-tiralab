@@ -72,7 +72,11 @@ public class nfaFragmentit {
         edellinen.getLoppu().setSeuraava(loppu);
         edellinen.getLoppu().setSeuraava2(edellinen.getAlku());
         
+        edellinen.setAlku(alku);
+        edellinen.setLoppu(loppu);
+        
         return kaari;
+
     }
   
     // Sama kuin edellinen mutta edellisen alku tilasta ei ole muuta mahdollisuutta kuin käyttää siirtymä mennäkseen

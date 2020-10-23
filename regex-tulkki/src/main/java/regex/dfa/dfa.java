@@ -62,7 +62,6 @@ public class dfa {
             if (currentDfa.getKasitelty()) {
                 continue;
             }
-            
             for (int i = 0; i < array.size(); i++) {
                 Tila t = array.get(i);
                 for (int k = 0; k < this.kirjaimet.size(); k++) {

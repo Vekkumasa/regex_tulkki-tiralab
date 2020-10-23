@@ -17,8 +17,8 @@ public class Lista<T> {
     
     public void add(T alkio) {
         if(this.alkioita == this.taulukko.length) {
-        kasvataListaa();
-    }
+            kasvataListaa();
+        }
         
         this.taulukko[this.alkioita] = alkio;
         this.alkioita++;

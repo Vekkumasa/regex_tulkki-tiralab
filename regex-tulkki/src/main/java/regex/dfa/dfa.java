@@ -3,20 +3,17 @@ package regex.dfa;
 import regex.domain.*;
 import regex.nfa.nfa;
 
-import java.util.HashSet;
-
 import regex.tietorakenteet.Pino;
 import regex.tietorakenteet.Lista;
 import regex.tietorakenteet.HajautusTaulu;
 
 public class dfa {
     private nfa nfa;
-    private HajautusTaulu<Integer, HashSet<Tila>> dfa_tilat_avaimina;
-    private HajautusTaulu<HashSet<Tila>, Integer> dfa_setit_avaimina;
+    private HajautusTaulu<Integer, dfaTila> dfa_tilat_avaimina;
+    private HajautusTaulu<dfaTila, Integer> dfa_setit_avaimina;
     private int tila;
-    private HashSet<Tila> alkutilat;
     private String syote;
-    private Character[] kirjaimet;
+    private Lista<Character> kirjaimet;
     private int indeksi = 0;
     private Pino<Integer> pino;
     private dfaTila ekaDfaTila;
@@ -25,7 +22,6 @@ public class dfa {
     
     public dfa(nfa nfa, String syote) {
         this.nfa = nfa;
-        // Liitetään toisiinsa kaikki NFA tilat (hashset) ja dfa tilat
         this.dfa_tilat_avaimina = new HajautusTaulu<>();
         this.dfa_setit_avaimina = new HajautusTaulu<>();
         this.pino = new Pino();
@@ -34,13 +30,13 @@ public class dfa {
         this.tila = 1;
         // Lisätään syötteen eteen 1 mikä tahansa merkki tarkistus metodin indeksoinnin helpottamiseksi
         this.syote = "#" + syote;
-        this.kirjaimet = new Character[nfa.getKirjaimet().size()];
-        this.alkutilat = new HashSet();
+        this.kirjaimet = nfa.getKirjaimet();
         this.ekaDfaTila = new dfaTila(this.tila);
         this.dfaLista = new dfaTila[nfa.getKaari().getLoppu().getTila() + 1];
     
+        etsiJaLiitaEpsilonit(nfa.getKaari().getAlku(), ekaDfaTila);
         nollaaVierailut(nfa.getKaari().getAlku());
-        etsiJaLiitaEpsilonit(nfa.getKaari().getAlku(), alkutilat, ekaDfaTila);
+        
         Lista<Tila> tilat = ekaDfaTila.getNfaTilat();
         for (int i = 0; i < tilat.size(); i++) {
             Tila tila = tilat.get(i);
@@ -48,16 +44,9 @@ public class dfa {
                     ekaDfaTila.setHyvaksyvaTila(true);
                 }
         }
-        nollaaVierailut(nfa.getKaari().getAlku());
         
-        // Nfa:ssa on tallennettu kaikki käytetyt kirjaimet hashsettiin eli ei ole duplikaatteja
-        // ja tässä ne kopioidaan kirjain taulukkoon
-        for(Character c : nfa.getKirjaimet()) {
-            kirjaimet[indeksi++] = c;
-        }
-        
-        dfa_tilat_avaimina.put(tila, alkutilat);
-        dfa_setit_avaimina.put(alkutilat, tila);
+        dfa_tilat_avaimina.put(tila, ekaDfaTila);
+        dfa_setit_avaimina.put(ekaDfaTila, tila);
         dfaLista[tila] = ekaDfaTila;
     }
     
@@ -76,7 +65,8 @@ public class dfa {
             
             for (int i = 0; i < array.size(); i++) {
                 Tila t = array.get(i);
-                for (char c : kirjaimet) {
+                for (int k = 0; k < this.kirjaimet.size(); k++) {
+                    Character c = this.kirjaimet.get(k);
                     if (t.getSiirtyma() == c) {
                         dfaTila uusi = luoDfaTila(t.getKaari().getLoppu());
                         currentDfa.lisaaSiirtyma(c, uusi.getTila());
@@ -96,15 +86,14 @@ public class dfa {
     private dfaTila luoDfaTila(Tila t) {
         this.tila++;
         dfaTila uusi = new dfaTila(this.tila);
-        HashSet<Tila> seuraava = new HashSet();
         
-        etsiJaLiitaEpsilonit(t, seuraava, uusi);
+        etsiJaLiitaEpsilonit(t, uusi);
         nollaaVierailut(t);
         
         Lista<Tila> tilat = uusi.getNfaTilat();
         
-        if (dfa_setit_avaimina.containsKey(seuraava) != null) {
-            uusi = dfaLista[dfa_setit_avaimina.get(seuraava)];
+        if (dfa_setit_avaimina.containsKey(uusi) != null) {
+            uusi = dfaLista[dfa_setit_avaimina.get(uusi)];
             this.tila--;
             return uusi;     
         } else {
@@ -117,8 +106,8 @@ public class dfa {
             
             dfaLista[this.tila] = uusi;
             this.pino.push(this.tila);
-            dfa_setit_avaimina.put(seuraava, this.tila);
-            dfa_tilat_avaimina.put(this.tila, seuraava);
+            dfa_setit_avaimina.put(uusi, this.tila);
+            dfa_tilat_avaimina.put(this.tila, uusi);
         }
         
         return uusi;
@@ -133,19 +122,17 @@ public class dfa {
      * @param dfaTila 
      */
     
-    private void etsiJaLiitaEpsilonit(Tila tila, HashSet<Tila> tilat, dfaTila dfaTila) {
+    private void etsiJaLiitaEpsilonit(Tila tila, dfaTila dfaTila) {
         if (tila == null || tila.isVierailtu()) {
             return;
         }
         
         tila.setVierailtu(true);
-        
-        tilat.add(tila);
         dfaTila.lisaaTila(tila);
         
         if (tila.getSiirtyma() == ' ') {
-            etsiJaLiitaEpsilonit(tila.getSeuraava(), tilat, dfaTila);
-            etsiJaLiitaEpsilonit(tila.getSeuraava2(), tilat, dfaTila);
+            etsiJaLiitaEpsilonit(tila.getSeuraava(), dfaTila);
+            etsiJaLiitaEpsilonit(tila.getSeuraava2(), dfaTila);
         }
     }
     

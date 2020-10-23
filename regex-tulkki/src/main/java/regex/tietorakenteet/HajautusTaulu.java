@@ -75,7 +75,7 @@ public class HajautusTaulu<K, V> {
             Lista<Pari<K, V>> indeksi = this.taulu[hash];
             for (int i = 0; i < indeksi.size(); i++) {
                 if (indeksi.get(i).getAvain().equals(avain)) {
-                    return indeksi.get(i).getAvain();
+                    return avain;
                 }
             }
         }
@@ -88,21 +88,23 @@ public class HajautusTaulu<K, V> {
      * @param avain
      * @param arvo 
      */
-    public void put(K avain, V arvo) {
+    public boolean put(K avain, V arvo) {
         Lista<Pari<K, V>> lista = haeLista(avain);
         int i = haeAvaimenIndeksi(lista, avain);
-
+        
         if (i < 0) {
             Pari<K, V> uusiPari = new Pari<>(avain, arvo);
             lista.add(uusiPari);
             this.alkioita++;
-        } else {
-            lista.get(i).setArvo(arvo);
-        }
-        
-        if (this.alkioita / this.taulu.length > 0.75) {
+            
+            if (this.alkioita / this.taulu.length > 0.75) {
             kasvataTaulunKokoa();
         }
+            return true;
+        } else {
+            lista.get(i).setArvo(arvo);
+            return false;
+        }   
     }
     
     /**
@@ -169,5 +171,23 @@ public class HajautusTaulu<K, V> {
                 uusi[hash].add(arvo);
             }
         } 
+    }
+    
+    @Override
+    public boolean equals(Object verrattava) {
+        if (this == verrattava) {
+            return true;
+        }
+        
+        if (!(verrattava instanceof HajautusTaulu)) {
+            return false;
+        }
+        
+        HajautusTaulu uusi = (HajautusTaulu) verrattava;
+        
+        if (this.taulu.equals(uusi)) {
+            return true;
+        }
+        return false;
     }
 }

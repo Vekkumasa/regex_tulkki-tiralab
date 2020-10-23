@@ -1,10 +1,8 @@
 package regex.nfa;
 
-import java.util.HashSet;
-
 import regex.domain.Kaari;
-import regex.domain.Tila;
 import regex.tietorakenteet.Pino;
+import regex.tietorakenteet.Lista;
 
 public class nfa {
     private Pino<Kaari> pino;
@@ -12,7 +10,7 @@ public class nfa {
     private regexToPostfix rtp;
     private nfaFragmentit fragmentit;
     private Kaari kaari;
-    private HashSet<Character> kirjaimet;
+    private Lista<Character> kirjaimet;
     
     public nfa(String lauseke) {
         this.rtp = new regexToPostfix();
@@ -20,7 +18,7 @@ public class nfa {
         this.lauseke = lauseke;
         this.fragmentit = new nfaFragmentit();
         this.pino = new Pino();
-        this.kirjaimet = new HashSet();
+        this.kirjaimet = new Lista();
     }
     
     /**
@@ -40,7 +38,7 @@ public class nfa {
                 case '|':
                     seuraava2 = pino.pop();
                     seuraava = pino.pop();
-                    pino.push(fragmentit.luoTaiTila(seuraava2, seuraava)); 
+                    pino.push(fragmentit.luoTaiTila(seuraava, seuraava2)); 
                     break;
                     
                 case '*':
@@ -60,8 +58,18 @@ public class nfa {
                     break;
                     
                 default:
+                    boolean onkoKirjainListassa = false;
+                    for (int k = 0; k < this.kirjaimet.size(); k++) {
+                        if (this.kirjaimet.get(k).equals(c)) {
+                            onkoKirjainListassa = true;
+                            break;
+                        }
+                    }
+                    if (onkoKirjainListassa == false) {
+                        kirjaimet.add(c);
+                    }
                     pino.push(fragmentit.luoKirjainTila(c));
-                    kirjaimet.add(c);
+                    onkoKirjainListassa = false;
             }
         }
         this.kaari = pino.pop();
@@ -77,36 +85,8 @@ public class nfa {
      * ilman duplikaatteja.
      * @return 
      */
-    public HashSet<Character> getKirjaimet() {
+    public Lista<Character> getKirjaimet() {
         return this.kirjaimet;
-    }
-    
-    /**
-     * Printtailua kaikista nfa tiloista ja siirtymistä.
-     * @param tila 
-     */
-    public void faktatTiskiin(Tila tila) {
-        if (tila == null || tila.isVierailtu()) {
-            return;
-        }
-        tila.setVierailtu(true);
-        
-        if (tila.getSiirtyma() != ' ') {
-            System.out.println("Tilan " + tila.getTila() + " siirtyma seuraavaan tilaan " + (tila.getTila() +1) + " on: " + tila.getSiirtyma());
-            faktatTiskiin(tila.getKaari().getLoppu());
-        }
-        if (tila.getSeuraava() != null) {
-            System.out.println("Tilan " + tila.getTila() + " seuraava tila on: " + tila.getSeuraava().getTila());
-            faktatTiskiin(tila.getSeuraava());
-        } else {
-     //       System.out.println("Tilan " + tila.getTila() + " seuraava on tyhjä");
-        }
-        if (tila.getSeuraava2() != null) {
-            System.out.println("Tilan " + tila.getTila() + " seuraava2 tila on: " + tila.getSeuraava2().getTila());
-            faktatTiskiin(tila.getSeuraava2());
-        } else {
-     //       System.out.println("Tilan " + tila.getTila() + " seuraava KAKSI on tyhjä");
-        }        
     }
     
     public String getLauseke() {

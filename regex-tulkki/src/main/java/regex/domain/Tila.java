@@ -117,5 +117,23 @@ public class Tila {
         this.siirtyma = siirtyma;
     }
 
+    @Override
+    public boolean equals(Object verrattava) {
+        if (this == verrattava) {
+            return true;
+        }
+        
+        if (!(verrattava instanceof Tila)) {
+            return false;
+        }
+        
+        Tila uusi = (Tila) verrattava;
+        
+        if (uusi.getTila() == this.tila) {
+            return true;
+        }
+        
+        return false;
+    }
 
 }

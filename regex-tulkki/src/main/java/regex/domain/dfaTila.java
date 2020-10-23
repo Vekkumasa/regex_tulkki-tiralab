@@ -9,6 +9,7 @@ public class dfaTila {
     private boolean hyvaksyvaTila;
     private boolean kasitelty;
     private int tila;
+    private int hashCode;
     
     public dfaTila(int tila) {
         this.nfaTilat = new Lista();
@@ -16,10 +17,12 @@ public class dfaTila {
         this.hyvaksyvaTila = false;
         this.kasitelty = false;
         this.tila = tila;
+        this.hashCode = 0;
     }
     
     public void lisaaTila(Tila tila) {
         getNfaTilat().add(tila);
+        this.hashCode += tila.hashCode();
     }
     
     public int getTila() {
@@ -61,6 +64,33 @@ public class dfaTila {
      */
     public void setHyvaksyvaTila(boolean hyvaksyvaTila) {
         this.hyvaksyvaTila = hyvaksyvaTila;
+    }
+    
+    @Override
+    public boolean equals(Object verrattava) {
+        if (this == verrattava) {
+            return true;
+        }   
+        if (!(verrattava instanceof dfaTila)) {
+            return false;
+        }   
+        dfaTila uusi = (dfaTila) verrattava;
+        
+        if (this.nfaTilat.size() != uusi.nfaTilat.size()) {
+            return false;
+        } else {
+            for (int i = 0; i < this.nfaTilat.size(); i++) {
+                if (this.nfaTilat.get(i) != uusi.getNfaTilat().get(i)) {
+                    return false;
+                }
+            }
+        }   
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        return this.hashCode;
     }
     
 }

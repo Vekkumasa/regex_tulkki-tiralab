@@ -1,20 +1,15 @@
 package regex.ui;
 
-import java.text.DecimalFormat;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -22,7 +17,6 @@ import javafx.stage.Stage;
 import regex.nfa.nfaFragmentit;
 import regex.nfa.regexToPostfix;
 import regex.nfa.nfa;
-import regex.domain.*;
 import regex.dfa.dfa;
 
 public class UI extends Application {
@@ -76,7 +70,7 @@ public class UI extends Application {
                 return;
                 
             } else if (!tarkistaMerkit(inputField.getText()) ) {
-                match.setText("Sallitut merkit ovat: * , + , ( , ) ja |");
+                match.setText("Sallitut merkit ovat: A-Z , a-z, 0-9, * , + , ( , ) ja |");
                 match.setTextFill(Color.RED); 
                 return;
                 
